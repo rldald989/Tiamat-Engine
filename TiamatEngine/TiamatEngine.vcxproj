@@ -142,6 +142,7 @@
     <ClCompile Include="Matrix\Matrix2.cpp" />
     <ClCompile Include="Matrix\Matrix3.cpp" />
     <ClCompile Include="Output.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Vector\Vector2.cpp" />
     <ClCompile Include="Vector\Vector3.cpp" />
   </ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="Matrix\Matrix2.h" />
     <ClInclude Include="Matrix\Matrix3.h" />
     <ClInclude Include="Output.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Vector\Vector2.h" />
     <ClInclude Include="Vector\Vector3.h" />

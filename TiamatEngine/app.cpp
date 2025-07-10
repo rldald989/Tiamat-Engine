@@ -15,6 +15,8 @@
 #include "Graphics/Material.h"
 #include "Graphics/MeshRenderer.h"
 
+#include "Scene.h"
+
 int main() {
 
     // Setup
@@ -33,21 +35,23 @@ int main() {
         test_image.WritePixel(rand_bw());
     }
 
-    // Our shader, this allows us to change the pixels on the screen how we'd like
-    TMT::Shader tmt_shader_basic("Shaders/vertex_basic.glsl", "Shaders/fragment_basic.glsl");
+    // Our scene, holds all scene data
+    TMT::Scene scene_test("Scene A");
 
-    // A simple quad mesh
-    TMT::Quad test_mesh;
+    // Our shader, this allows us to change the pixels on the screen how we'd like
+    TMT::Shader* tmt_shader_basic = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/fragment_basic.glsl");
 
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
-    TMT::Texture test_texture;
+    TMT::Texture* test_texture = new TMT::Texture();
     // Here we load the "test_image" image
-    test_texture.Load(test_image);
-    // Our material, it takes in our shader, our texture, and a color
-    TMT::Material test_material(tmt_shader_basic, test_texture, Vector3(1, 1, 1));
+    test_texture->Load(test_image);
 
-    // Our mesh renderer, it takes in our mesh and our material. It manages all of the rendering, it is simple and easy to use, just call the render function in the app loop
-    TMT::MeshRenderer test_renderer(test_mesh, test_material);
+    Vector3 test_color(1, 1, 1);
+
+    scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
+    scene_test.add_texture("Test Texture", test_texture);
+    scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
+    scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -56,12 +60,13 @@ int main() {
         tmt_window.clear();
 
         // Renders the object
-        test_renderer.render();
+        scene_test.render();
 
         // Swaps the buffers and does the poll events
         tmt_window.swap_buffers();
         tmt_window.poll_events();
     }
+
 
     //tmt_shader_basic.unuse();
     //vao.unbind();
