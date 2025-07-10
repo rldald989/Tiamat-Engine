@@ -13,136 +13,52 @@ Vector3 rand_bw() {
     return Vector3(r, r, r);
 }
 
-void BoxBlur(Image& a, Image& b, Vector2 canvSize) {
+Vector2 surrounding_pixels[] = {
+    // Top left
+    Vector2(-1, -1),
+    // Top middle
+    Vector2(0, -1),
+    // Top right
+    Vector2(1, -1),
+    // Middle right
+    Vector2(1, 0),
+    // Bottom right
+    Vector2(1, 1),
+    // Middle bottom
+    Vector2(0, 1),
+    // Bottom left
+    Vector2(-1, 1),
+    // Middle left
+    Vector2(-1, 0)
+};
+
+void BoxBlurE(Image& a, Image& b, Vector2 canvSize) {
     std::unordered_map<Vector2, Vector3> data = a.GetImageData();
 
-    Vector2 current_export_pixel(0, 0);
-    for (int i = 0; i < data.size(); i++) {
+    Vector2 current_image_pixel(0, 0);
 
-        Vector3 result = data[current_export_pixel];
-        if ((current_export_pixel.m_x - 1 >= 0 && current_export_pixel.m_y - 1 >= 0) &&
-            (current_export_pixel.m_x + 1 < canvSize.m_x && current_export_pixel.m_y + 1 < canvSize.m_y))
+    for (int i = 0; i < canvSize.m_x * canvSize.m_y; i++) {
+
+        Vector3 result(data[current_image_pixel]);
+        int allowed_pixel_count = 0;
+        for (size_t i = 0; i < sizeof(surrounding_pixels) / sizeof(Vector2); i++)
         {
-            // Not near edges
-            result = Vector3::average
-            (
-                //top left
-                data[current_export_pixel + Vector2(-1, -1)],
-                //top middle
-                data[current_export_pixel + Vector2(0, -1)],
-                //top right
-                data[current_export_pixel + Vector2(1, -1)],
-                //middle right
-                data[current_export_pixel + Vector2(1, 0)],
-                //bottom right
-                data[current_export_pixel + Vector2(1, 1)],
-                //middle bottom
-                data[current_export_pixel + Vector2(0, 1)],
-                //bottom left
-                data[current_export_pixel + Vector2(-1, 1)],
-                //middle left
-                data[current_export_pixel + Vector2(-1, 0)],
-                //self
-                data[current_export_pixel]
-            );
+            Vector2 combo_pixel = surrounding_pixels[i] + current_image_pixel;
+            if (combo_pixel.m_x >= 0 || combo_pixel.m_y >= 0 || (combo_pixel.m_x >= 0 && combo_pixel.m_y >= 0)) {
+                result = result + data[surrounding_pixels[i] + current_image_pixel];
+                allowed_pixel_count++;
+            }
+
         }
-        else if (current_export_pixel.m_x - 1 <= 0 && current_export_pixel.m_y - 1 <= 0) {
-            //Top left corner
-            result = Vector3::average
-            (
-                //middle right
-                data[current_export_pixel + Vector2(1, 0)], //keep
-                //bottom right
-                data[current_export_pixel + Vector2(1, 1)], //keep
-                //middle bottom
-                data[current_export_pixel + Vector2(0, 1)], //keep
-                //self
-                data[current_export_pixel]
-            );
-        }
-        else if ((current_export_pixel.m_x - 1 <= 0 && current_export_pixel.m_y - 1 >= 0) && (current_export_pixel.m_x + 1 < canvSize.m_x && current_export_pixel.m_y + 1 < canvSize.m_y))
-        {
-            //Left edge
-            result = Vector3::average
-            (
-                //top middle
-                data[current_export_pixel + Vector2(0, -1)], //keep
-                //top right
-                data[current_export_pixel + Vector2(1, -1)], //keep
-                //middle right
-                data[current_export_pixel + Vector2(1, 0)], //keep
-                //bottom right
-                data[current_export_pixel + Vector2(1, 1)], //keep
-                //middle bottom
-                data[current_export_pixel + Vector2(0, 1)], //keep
-                //self
-                data[current_export_pixel]
-            );
-        }
-        else if ((current_export_pixel.m_x - 1 >= 0 && current_export_pixel.m_y - 1 <= 0) && (current_export_pixel.m_x + 1 < canvSize.m_x && current_export_pixel.m_y + 1 < canvSize.m_y))
-        {
-            //Top edge
-            result = Vector3::average
-            (
-                //middle right
-                data[current_export_pixel + Vector2(1, 0)],
-                //bottom right
-                data[current_export_pixel + Vector2(1, 1)],
-                //middle bottom
-                data[current_export_pixel + Vector2(0, 1)],
-                //bottom left
-                data[current_export_pixel + Vector2(-1, 1)],
-                //middle left
-                data[current_export_pixel + Vector2(-1, 0)],
-                //self
-                data[current_export_pixel]
-            );
-        }
-        else if ((current_export_pixel.m_x - 1 >= 0) && (current_export_pixel.m_x + 1 < canvSize.m_x && current_export_pixel.m_y + 1 <= canvSize.m_y))
-        {
-            //Bottom edge
-            result = Vector3::average
-            (
-                //top left
-                data[current_export_pixel + Vector2(-1, -1)],
-                //top middle
-                data[current_export_pixel + Vector2(0, -1)],
-                //top right
-                data[current_export_pixel + Vector2(1, -1)],
-                //middle right
-                data[current_export_pixel + Vector2(1, 0)],
-                //middle left
-                data[current_export_pixel + Vector2(-1, 0)],
-                //self
-                data[current_export_pixel]
-            );
-        }
-        else if ((current_export_pixel.m_y - 1 >= 0) && (current_export_pixel.m_x + 1 <= canvSize.m_x && current_export_pixel.m_y + 1 < canvSize.m_y))
-        {
-            //Right Edge
-            result = Vector3::average
-            (
-                //top left
-                data[current_export_pixel + Vector2(-1, -1)],
-                //top middle
-                data[current_export_pixel + Vector2(0, -1)],
-                //middle bottom
-                data[current_export_pixel + Vector2(0, 1)],
-                //bottom left
-                data[current_export_pixel + Vector2(-1, 1)],
-                //middle left
-                data[current_export_pixel + Vector2(-1, 0)],
-                //self
-                data[current_export_pixel]
-            );
-        }
+
+        result = result / allowed_pixel_count;
 
         b.WritePixel(result);
 
-        current_export_pixel.m_x++;
-        if (current_export_pixel.m_x >= canvSize.m_x) {
-            current_export_pixel.m_x = 0;
-            current_export_pixel.m_y++;
+        current_image_pixel.m_x++;
+        if (current_image_pixel.m_x >= canvSize.m_x) {
+            current_image_pixel.m_x = 0;
+            current_image_pixel.m_y++;
         }
     }
 }
