@@ -23,7 +23,7 @@ int main() {
     glfwInit();
 
     // The window, with size, title, and color
-    TMT::Window tmt_window(500, 500, "[Tiamat Engine]", Vector3(0.33f, 0.41f, 0.47f));
+    TMT::Window tmt_window(800, 800, "[Tiamat Engine]", Vector3(0.33f, 0.41f, 0.47f));
 
     glewInit();
 
@@ -35,16 +35,20 @@ int main() {
         test_image.WritePixel(rand_bw());
     }
 
-    // Our scene, holds all scene data
-    TMT::Scene scene_test("Scene A");
+    Image blurred("blurred", test_image.GetResolution());
+
+    BoxBlur(test_image, blurred, test_image.GetResolution());
+
+    // Our scene, holds all scene data, the first parameter is the name, and the second parameter is the directory the scene gets saved to
+    TMT::Scene scene_test("Scene A", "Scenes");
 
     // Our shader, this allows us to change the pixels on the screen how we'd like
-    TMT::Shader* tmt_shader_basic = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/fragment_basic.glsl");
+    TMT::Shader tmt_shader_basic = TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/fragment_basic.glsl");
 
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
-    TMT::Texture* test_texture = new TMT::Texture();
+    TMT::Texture test_texture = TMT::Texture();
     // Here we load the "test_image" image
-    test_texture->Load(test_image);
+    test_texture.Load(&blurred);
 
     Vector3 test_color(1, 1, 1);
 
@@ -67,7 +71,7 @@ int main() {
         tmt_window.poll_events();
     }
 
-
+    scene_test.export_scene();
     //tmt_shader_basic.unuse();
     //vao.unbind();
 

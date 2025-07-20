@@ -1,0 +1,3 @@
+[S] "Tiamat Basic Shader" Shaders/vertex_basic.glsl Shaders/fragment_basic.glsl
+[T] "Test Texture" blurred.ppm
+[M] "Test Material" "Tiamat Basic Shader" "Test Texture"

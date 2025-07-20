@@ -126,6 +126,11 @@ void Image::Load(const char *image_path)
     counter = 0;
 }
 
+std::string Image::GetFilePath()
+{
+    return m_output_file_name + ".ppm";
+}
+
 std::vector<float> Image::image_to_float(Image& image)
 {
     std::vector<float> data;

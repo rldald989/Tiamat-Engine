@@ -38,6 +38,8 @@ public:
 
     void Load(const char* image_path);
 
+    std::string GetFilePath();
+
     static std::vector<float> image_to_float(Image & image);
 
     static Image Mix(Image& a, Image& b, float mix);
@@ -50,4 +52,5 @@ public:
     Vector2 GetResolution();
 
     std::unordered_map<Vector2, Vector3> GetImageData();
+
 };

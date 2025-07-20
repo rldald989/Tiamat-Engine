@@ -1,8 +1,10 @@
 #include "Texture.h"
 
-void TMT::Texture::Load(Image& image)
+void TMT::Texture::Load(Image* image)
 {
-	std::vector<float> image_data = Image::image_to_float(image);
+	m_local_image = image;
+
+	std::vector<float> image_data = Image::image_to_float(*image);
 
 	glGenTextures(1, &m_texture_id);
 
@@ -14,8 +16,8 @@ void TMT::Texture::Load(Image& image)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int width, height, nrChannels;
-	width = image.GetResolution().m_x;
-	height = image.GetResolution().m_y;
+	width = image->GetResolution().m_x;
+	height = image->GetResolution().m_y;
 
 	if (image_data.size() > 0)
 	{

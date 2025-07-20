@@ -56,6 +56,8 @@ namespace TMT
 		// Sets a Mat4 within the glsl shader code
 		void set_matrix4(const char* name, glm::mat4 value, bool transpose = GL_FALSE);	
 
+		friend class Scene;
+
 	private:
 		unsigned int m_ID;
 
@@ -136,9 +138,15 @@ namespace TMT
 
 			glUseProgram(0);
 		}
+
+		protected:
+			const char* m_fragment_file_path;
+			const char* m_vertex_file_path;
 	};
 
 	static glm::vec3 to_glm(Vector3 v) {
 		return glm::vec3(v.x, v.y, v.z);
 	}
+
+	
 }

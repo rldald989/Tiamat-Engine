@@ -8,7 +8,7 @@ namespace TMT {
 	class Material
 	{
 	public:
-		Material(const Shader& shader, const Texture& texture, Vector3 color);
+		Material(Shader* shader, Texture* texture, Vector3 color);
 		~Material();
 
 		// Draws elements
@@ -16,9 +16,15 @@ namespace TMT {
 
 		void update();
 
-	private:
-		Shader m_shader;
-		Texture m_texture;
+		Shader* get_shader();
+
+		Texture* get_texture();
+
+		friend class Scene;
+
+	protected:
+		Shader* m_shader;
+		Texture* m_texture;
 		Vector3 m_color;
 	};
 }

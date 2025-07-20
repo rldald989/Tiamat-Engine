@@ -32,7 +32,7 @@ Vector2 surrounding_pixels[] = {
     Vector2(-1, 0)
 };
 
-void BoxBlurE(Image& a, Image& b, Vector2 canvSize) {
+void BoxBlur(Image& a, Image& b, Vector2 canvSize) {
     std::unordered_map<Vector2, Vector3> data = a.GetImageData();
 
     Vector2 current_image_pixel(0, 0);

@@ -39,9 +39,6 @@
     <ClCompile Include="Matrix\Matrix3.cpp">
       <Filter>Source Files\Maths</Filter>
     </ClCompile>
-    <ClCompile Include="Output.cpp">
-      <Filter>Source Files\Maths</Filter>
-    </ClCompile>
     <ClCompile Include="Vector\Vector3.cpp">
       <Filter>Source Files\Maths</Filter>
     </ClCompile>
@@ -67,6 +64,9 @@
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Output.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

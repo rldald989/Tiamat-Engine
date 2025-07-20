@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-TMT::Shader::Shader(const char* vFile, const char* fFile)
+TMT::Shader::Shader(const char* vFile, const char* fFile) : m_vertex_file_path(vFile), m_fragment_file_path(fFile)
 {
 	// The data for the vertex and fragment shaders
 	unsigned int vertex_shader = 0;
