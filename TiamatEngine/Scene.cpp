@@ -52,7 +52,8 @@ void TMT::Scene::export_scene()
 		m_scene_out << data;
 	}
 	for (auto& t : m_textures) {
-		std::string data = "[T] \"" + t.first + "\" " + t.second->m_local_image->GetFilePath() + "\n";
+		std::string data = "[T] \"" + t.first + "\" " + t.second->m_local_file_path + "\n";
+		
 		m_scene_out << data;
 	}
 

@@ -136,16 +136,16 @@ std::vector<float> Image::image_to_float(Image& image)
     std::vector<float> data;
     data.reserve(image.m_mapped_image_data.size() * 3);
 
-    Vector2 current_print_pixel(image.m_resolution);
+    Vector2 current_print_pixel(0, image.m_resolution.m_y);
     for (int i = image.m_resolution.m_x * image.m_resolution.m_y; i > 0; i--)
     {
         data.push_back(image.m_mapped_image_data[current_print_pixel].x);
         data.push_back(image.m_mapped_image_data[current_print_pixel].y);
         data.push_back(image.m_mapped_image_data[current_print_pixel].z);
         
-        current_print_pixel.m_x--;
-        if (current_print_pixel.m_x <= 0) {
-            current_print_pixel.m_x = image.m_resolution.m_x;
+        current_print_pixel.m_x++;
+        if (current_print_pixel.m_x >= image.m_resolution.m_x) {
+            current_print_pixel.m_x = 0;
             current_print_pixel.m_y--;
         }
     }

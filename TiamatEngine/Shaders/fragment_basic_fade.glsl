@@ -6,7 +6,10 @@ in vec2 TexCoord;
 
 uniform sampler2D ourTexture;
 
+uniform float fade_time;
+
 void main() {
    vec4 tex = texture(ourTexture, vec2(TexCoord.x, TexCoord.y));
-   FragColor = vec4(tex.rgb * color, 1.0);
+
+   FragColor = vec4(tex.rgb * color, tex.a * fade_time);
 }

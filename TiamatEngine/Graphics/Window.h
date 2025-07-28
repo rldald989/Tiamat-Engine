@@ -16,6 +16,8 @@ namespace TMT {
 
 		void set_color(Vector3 color);
 
+		void enable_alpha();
+
 		void clear();
 
 		void swap_buffers();

@@ -108,3 +108,8 @@ std::string Vector3::to_string_i(Vector3 a)
 {
     return std::string(std::to_string((int)a.x) + " " + std::to_string((int)a.y) + " " + std::to_string((int)a.z));
 }
+
+Vector3 Vector3::to_rgb(Vector3 a)
+{
+    return Vector3(a.x, a.y, a.z) * 255;
+}

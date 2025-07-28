@@ -29,6 +29,12 @@ void TMT::Window::set_color(Vector3 color)
 	m_color = color;
 }
 
+void TMT::Window::enable_alpha()
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
 void TMT::Window::clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
