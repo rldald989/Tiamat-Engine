@@ -143,6 +143,7 @@
     <ClCompile Include="Matrix\Matrix3.cpp" />
     <ClCompile Include="Output.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector\Vector2.cpp" />
     <ClCompile Include="Vector\Vector3.cpp" />
   </ItemGroup>
@@ -160,6 +161,7 @@
     <ClInclude Include="Output.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Vector\Vector2.h" />
     <ClInclude Include="Vector\Vector3.h" />

@@ -16,20 +16,25 @@
 
 #include "Scene.h"
 
+#include "Timer.h"
+
+#include "stb_image.h"
+
 int main() {
 
     // Setup
     glfwInit();
 
     // Base window color
-    Vector3 base_window_color(0.33f, 0.41f, 0.47f);
+    Vector3 base_window_color(0, 0, 0);
 
     // The window, with size, title, and color
     TMT::Window tmt_window(800, 800, "[Tiamat Engine]", base_window_color);
 
     glewInit();
 
-    
+    // Flips stbi images on load
+    stbi_set_flip_vertically_on_load(true);
 
     // Enables transparency
     tmt_window.enable_alpha();
@@ -53,7 +58,7 @@ int main() {
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
     TMT::Texture test_texture = TMT::Texture();
     // Here we load the "test_image" image
-    test_texture.load_ppm(&test_image);
+    test_texture.load_stbi("Images/BWIcon.png");
 
     Vector3 test_color(1, 1, 1);
 
@@ -62,15 +67,8 @@ int main() {
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
 
-    float fade_mod = 0.5f;
-
-    float fade_time = 0.0f;
-
-    int frame_timer = 0;
-
-    int delay_time = 5000;
-
-    float time = 0.0f;
+    TMT::Timer logo_timer(10000.f);
+    TMT::Timer bg_timer(20000.f);
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -78,25 +76,18 @@ int main() {
         // Clears the buffer and renders the window color
         tmt_window.clear();
 
-        if (frame_timer >= delay_time && fade_time <= 1.f) {
-            fade_time = ((float)glfwGetTime() - time) * fade_mod;
-        }
-        else {
-            time = glfwGetTime();
-        }
 
-        if (fade_time > 1) {
-            frame_timer = 0;
-        }
+        tmt_window.set_color(base_window_color + ((Vector3(179, 184, 228) / 255) - base_window_color) * bg_timer.get_normalized_time());
 
-        tmt_window.set_color(base_window_color + ((Vector3(179, 184, 228) / 255) - base_window_color) * fade_time);
-
-        tmt_shader_basic.set_float("fade_time", fade_time);
+        tmt_shader_basic.set_float("fade_time", logo_timer.get_normalized_time());
 
         // Renders the object
         scene_test.render();
 
-        frame_timer++;
+        bg_timer.update();
+        if (bg_timer.get_end_status()) {
+            logo_timer.update();
+        }
 
         // Swaps the buffers and does the poll events
         tmt_window.swap_buffers();
