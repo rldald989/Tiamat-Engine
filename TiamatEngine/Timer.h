@@ -4,6 +4,10 @@
 #include <glfw3.h>
 
 namespace TMT {
+
+	static float delta_time;
+	static float last_time;
+
 	class Timer
 	{
 	public:
@@ -29,4 +33,10 @@ namespace TMT {
 		float m_timer_duration;
 		bool m_stop;
 	};
+
+	static void update_delta_time() {
+		float current_time = glfwGetTime();
+		delta_time = current_time - last_time;
+		last_time = current_time;
+	}
 }

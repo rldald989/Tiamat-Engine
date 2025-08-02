@@ -43,6 +43,6 @@ void TMT::Timer::restart()
 
 void TMT::Timer::update() {
 	if (m_time < m_timer_duration && !m_stop) {
-		m_time++;
+		m_time++ * delta_time;
 	}
 }

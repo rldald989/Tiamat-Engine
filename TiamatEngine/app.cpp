@@ -67,8 +67,11 @@ int main() {
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
 
-    TMT::Timer logo_timer(10000.f);
-    TMT::Timer bg_timer(20000.f);
+    TMT::Timer logo_timer(100.f);
+    TMT::Timer bg_timer(200.f);
+
+    float last_time = 0.0f;
+    float delta_time = 0.0f;
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -76,6 +79,7 @@ int main() {
         // Clears the buffer and renders the window color
         tmt_window.clear();
 
+        TMT::update_delta_time();
 
         tmt_window.set_color(base_window_color + ((Vector3(179, 184, 228) / 255) - base_window_color) * bg_timer.get_normalized_time());
 
@@ -93,6 +97,8 @@ int main() {
         tmt_window.swap_buffers();
         tmt_window.poll_events();
     }
+
+    std::cout << delta_time << std::endl;
 
     scene_test.export_scene();
     //tmt_shader_basic.unuse();
