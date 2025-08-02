@@ -90,6 +90,11 @@ Vector3 Vector3::mix(Vector3& a, Vector3& b, float mod)
     return a * (1.f - mod) + b * mod;
 }
 
+Vector3 Vector3::lerp(Vector3 a, Vector3 b, float t)
+{
+    return Vector3(a + (b - a) * t);
+}
+
 float* Vector3::vector3_to_float(Vector3 v)
 {
     static float arr[3];

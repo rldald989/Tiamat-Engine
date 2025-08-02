@@ -3,10 +3,11 @@
 #include <glew.h>
 #include <glfw3.h>
 
-namespace TMT {
+#include "Time.h"
 
-	static float delta_time;
-	static float last_time;
+#include <iostream>
+
+namespace TMT {
 
 	class Timer
 	{
@@ -33,10 +34,4 @@ namespace TMT {
 		float m_timer_duration;
 		bool m_stop;
 	};
-
-	static void update_delta_time() {
-		float current_time = glfwGetTime();
-		delta_time = current_time - last_time;
-		last_time = current_time;
-	}
 }

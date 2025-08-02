@@ -38,6 +38,8 @@ public:
 
     static Vector3 mix(Vector3& a, Vector3& b, float mod);
 
+    static Vector3 lerp(Vector3 a, Vector3 b, float t);
+
     static float* vector3_to_float(Vector3 v);
 
     static std::string to_string_f(Vector3 a);

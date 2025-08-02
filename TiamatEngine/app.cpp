@@ -20,6 +20,9 @@
 
 #include "stb_image.h"
 
+// Define delta time otherwise code within classes using delta_time will not work properly or at all
+float TMT::delta_time = 0.0f;
+
 int main() {
 
     // Setup
@@ -67,11 +70,8 @@ int main() {
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
 
-    TMT::Timer logo_timer(100.f);
-    TMT::Timer bg_timer(200.f);
-
-    float last_time = 0.0f;
-    float delta_time = 0.0f;
+    TMT::Timer logo_timer(1.f);
+    TMT::Timer bg_timer(2.f);
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -81,7 +81,7 @@ int main() {
 
         TMT::update_delta_time();
 
-        tmt_window.set_color(base_window_color + ((Vector3(179, 184, 228) / 255) - base_window_color) * bg_timer.get_normalized_time());
+        tmt_window.set_color(Vector3::lerp(base_window_color, Vector3(179, 184, 228) / 255, bg_timer.get_normalized_time()));
 
         tmt_shader_basic.set_float("fade_time", logo_timer.get_normalized_time());
 
@@ -98,7 +98,7 @@ int main() {
         tmt_window.poll_events();
     }
 
-    std::cout << delta_time << std::endl;
+
 
     scene_test.export_scene();
     //tmt_shader_basic.unuse();
