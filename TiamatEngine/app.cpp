@@ -68,6 +68,7 @@ int main() {
     scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
     scene_test.add_texture("Test Texture", test_texture);
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
+
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
 
     TMT::Timer logo_timer(1.f);

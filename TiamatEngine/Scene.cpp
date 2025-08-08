@@ -47,26 +47,32 @@ void TMT::Scene::export_scene()
 
 	std::string data;
 
+	// Adds the shaders to the file
 	for (auto& s : m_shaders) {
 		data = "[S] \"" + s.first + "\" " + s.second->m_vertex_file_path + " " + s.second->m_fragment_file_path + "\n";
 		m_scene_out << data;
 	}
+
+	// Adds the textures to the file
 	for (auto& t : m_textures) {
 		std::string data = "[T] \"" + t.first + "\" " + t.second->m_local_file_path + "\n";
 		
 		m_scene_out << data;
 	}
 
+	// Adds the materials to the file
 	for (auto& m : m_materials) {
 		std::string shader;
 		std::string tex;
 
+		// Checks what shader in m_shaders is the same as the shader in m_materials
 		for (auto& s : m_shaders) {
 			if (s.second == m.second->m_shader) {
 				shader = s.first;
 			}
 		}
 
+		// Checks what shader in m_textures is the same as the shader in m_textures
 		for (auto& t : m_textures) {
 			if (t.second == m.second->m_texture) {
 				tex = t.first;
@@ -77,6 +83,17 @@ void TMT::Scene::export_scene()
 		m_scene_out << data;
 	}
 
+	for (int i = 0; i < m_mesh_renderers.size(); i++) {
+		std::string mat;
+		for (auto& m : m_materials) {
+			if (m.second == m_mesh_renderers[i]->m_material) {
+				mat = m.first;
+			}
+		}
+
+		std::string data = "[#] \"" + std::to_string(i) + "\" \"" + typeid(m_mesh_renderers[i]->m_mesh).name() + "\" \"" + mat + "\"\n";
+		m_scene_out << data;
+	}
 
 	m_scene_out.close();
 }
@@ -86,10 +103,11 @@ void TMT::Scene::add_mesh_renderer(Mesh mesh_type, std::string material)
 	Mesh mesh = mesh_type;
 	if (!m_materials[material]) {
 		std::cout << "ERROR: invalid material input!" << std::endl;
+		exit(EXIT_FAILURE);
 	}
 	else 
 	{
-		m_mesh_renderers.push_back(new MeshRenderer(mesh, *m_materials[material]));
+		m_mesh_renderers.push_back(new MeshRenderer(mesh, m_materials[material]));
 	}
 }
 

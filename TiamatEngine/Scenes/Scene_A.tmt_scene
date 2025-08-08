@@ -1,3 +1,4 @@
 [S] "Tiamat Basic Shader" Shaders/vertex_basic.glsl Shaders/fragment_basic_fade.glsl
 [T] "Test Texture" Images/BWIcon.png
 [M] "Test Material" "Tiamat Basic Shader" "Test Texture"
+[#] "0" "class TMT::Mesh" "Test Material"

@@ -7,22 +7,20 @@
 
 namespace TMT 
 {
-	
-
-	
-
 	class MeshRenderer
 	{
 	public:
-		MeshRenderer(const Mesh& mesh, const Material& material);
+		MeshRenderer(const Mesh& mesh, Material* material);
 		~MeshRenderer();
 
 		void render();
 
-	private:
+		friend class Scene;
+
+	protected:
 
 		Mesh m_mesh;
-		Material m_material;
+		Material* m_material;
 
 		VAO m_vao;
 		VBO m_vbo;

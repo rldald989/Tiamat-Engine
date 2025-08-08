@@ -1,6 +1,7 @@
 #pragma once
 
 namespace TMT {
+
 	extern float delta_time;
 	static float last_time = 0.0f;
 

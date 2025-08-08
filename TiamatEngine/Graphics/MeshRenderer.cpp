@@ -1,6 +1,6 @@
 #include "MeshRenderer.h"
 
-TMT::MeshRenderer::MeshRenderer(const Mesh& mesh, const Material& material) : m_mesh(mesh), m_material(material), m_vao(), m_vbo(), m_ibo()
+TMT::MeshRenderer::MeshRenderer(const Mesh& mesh, Material* material) : m_mesh(mesh), m_material(material), m_vao(), m_vbo(), m_ibo()
 {
     std::cout << m_mesh.get_nr_of_indicies();
     m_vao.bind();
@@ -29,7 +29,7 @@ TMT::MeshRenderer::~MeshRenderer()
 void TMT::MeshRenderer::render()
 {
     glActiveTexture(GL_TEXTURE0);
-    m_material.update();
+    m_material->update();
     m_vao.bind();
-    m_material.draw_elements(m_mesh.get_nr_of_indicies(), m_mesh.get_index_data());
+    m_material->draw_elements(m_mesh.get_nr_of_indicies(), m_mesh.get_index_data());
 }

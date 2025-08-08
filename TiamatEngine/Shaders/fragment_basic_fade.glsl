@@ -1,11 +1,11 @@
 #version 330 core
 
 out vec4 FragColor;
-uniform vec3 color;
 in vec2 TexCoord;
+in vec3 v_position;
 
+uniform vec3 color;
 uniform sampler2D ourTexture;
-
 uniform float fade_time;
 
 void main() {
