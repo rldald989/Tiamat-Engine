@@ -90,7 +90,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)\Dep\glm\include;$(SolutionDir)\Dep\GLEW\include;$(SolutionDir)\Dep\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -142,8 +142,10 @@
     <ClCompile Include="Matrix\Matrix2.cpp" />
     <ClCompile Include="Matrix\Matrix3.cpp" />
     <ClCompile Include="Output.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Tokenizer.cpp" />
     <ClCompile Include="Vector\Vector2.cpp" />
     <ClCompile Include="Vector\Vector3.cpp" />
   </ItemGroup>
@@ -159,10 +161,12 @@
     <ClInclude Include="Matrix\Matrix2.h" />
     <ClInclude Include="Matrix\Matrix3.h" />
     <ClInclude Include="Output.h" />
+    <ClInclude Include="Parser.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Tokenizer.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Vector\Vector2.h" />
     <ClInclude Include="Vector\Vector3.h" />

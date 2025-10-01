@@ -18,9 +18,8 @@ namespace TMT {
 	class Mesh
 	{
 	public:
-		Mesh();
+		Mesh(std::string name);
 		~Mesh();
-
 
 		vertex* get_vertex_data();
 
@@ -32,10 +31,12 @@ namespace TMT {
 
 		void set(vertex* verticies, unsigned int* indicies, unsigned int nr_of_verticies, unsigned int nr_of_indicies);
 
+		std::string get_name();
+
 	private:
 		std::vector<vertex> m_verticies;
 		std::vector<unsigned int> m_indicies;
-
+		std::string m_type_name;
 		
 	};
 

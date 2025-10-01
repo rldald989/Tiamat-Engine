@@ -46,6 +46,7 @@ public:
     static std::string to_string_i(Vector3 a);
 
     static Vector3 to_rgb(Vector3 a);
+    static Vector3 to_xyz(Vector3 a);
 };
 
 template <typename... Args>

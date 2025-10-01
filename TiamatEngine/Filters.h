@@ -13,7 +13,7 @@ Vector3 rand_bw() {
     return Vector3(r, r, r);
 }
 
-Vector2 surrounding_pixels[] = {
+Vector2 kernel_3X3[] = {
     // Top left
     Vector2(-1, -1),
     // Top middle
@@ -41,11 +41,11 @@ void BoxBlur(Image& a, Image& b, Vector2 canvSize) {
 
         Vector3 result(data[current_image_pixel]);
         int allowed_pixel_count = 0;
-        for (size_t i = 0; i < sizeof(surrounding_pixels) / sizeof(Vector2); i++)
+        for (size_t i = 0; i < sizeof(kernel_3X3) / sizeof(Vector2); i++)
         {
-            Vector2 combo_pixel = surrounding_pixels[i] + current_image_pixel;
+            Vector2 combo_pixel = kernel_3X3[i] + current_image_pixel;
             if (combo_pixel.m_x >= 0 || combo_pixel.m_y >= 0 || (combo_pixel.m_x >= 0 && combo_pixel.m_y >= 0)) {
-                result = result + data[surrounding_pixels[i] + current_image_pixel];
+                result = result + data[kernel_3X3[i] + current_image_pixel];
                 allowed_pixel_count++;
             }
 

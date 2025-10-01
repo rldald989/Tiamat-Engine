@@ -118,3 +118,8 @@ Vector3 Vector3::to_rgb(Vector3 a)
 {
     return Vector3(a.x, a.y, a.z) * 255;
 }
+
+Vector3 Vector3::to_xyz(Vector3 a)
+{
+    return a/255;
+}

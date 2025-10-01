@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-TMT::Mesh::Mesh()
+TMT::Mesh::Mesh(std::string name) : m_type_name(name)
 {
 	
 }
@@ -39,11 +39,15 @@ void TMT::Mesh::set(vertex* verticies, unsigned int* indicies, unsigned int nr_o
 	for (int i = 0; i < nr_of_indicies; i++)
 	{
 		m_indicies.push_back(indicies[i]);
-		std::cout << i << std::endl;
 	}
 }
 
-TMT::Quad::Quad()
+std::string TMT::Mesh::get_name()
+{
+	return m_type_name;
+}
+
+TMT::Quad::Quad() : Mesh("Quad")
 {
 	vertex verticies[] =
 	{

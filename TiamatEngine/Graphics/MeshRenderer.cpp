@@ -2,7 +2,6 @@
 
 TMT::MeshRenderer::MeshRenderer(const Mesh& mesh, Material* material) : m_mesh(mesh), m_material(material), m_vao(), m_vbo(), m_ibo()
 {
-    std::cout << m_mesh.get_nr_of_indicies();
     m_vao.bind();
     m_vbo.bind();
     m_ibo.bind();

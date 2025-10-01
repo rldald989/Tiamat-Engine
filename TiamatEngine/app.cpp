@@ -45,23 +45,20 @@ int main() {
     // An image, you can write to it or load your own ppm image using the Load function
     Image test_image("noise.ppm", Vector2(128, 128));
 
-    test_image.Load("Images/AVYCharacter.ppm");
-    
-    // This generates an image that is black and white noise using the WritePixel function
-    //for (int i = 0; i < pow(128, 2); i++) {
-    //    test_image.WritePixel(rand_bw());
-    //}
+    test_image.Load("raytraced.ppm");
+
+    //This generates an image that is black and white noise using the WritePixel function
 
     // Our scene, holds all scene data, the first parameter is the name, and the second parameter is the directory the scene gets saved to
     TMT::Scene scene_test("Scene A", "Scenes");
 
     // Our shader, this allows us to change the pixels on the screen how we'd like
-    TMT::Shader tmt_shader_basic = TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/fragment_basic_fade.glsl");
+    TMT::Shader* tmt_shader_basic = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/fragment_basic_fade.glsl");
 
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
-    TMT::Texture test_texture = TMT::Texture();
+    TMT::Texture* test_texture = new TMT::Texture();
     // Here we load the "test_image" image
-    test_texture.load_stbi("Images/BWIcon.png");
+    test_texture->load_stbi("Images/BWIcon.png");
 
     Vector3 test_color(1, 1, 1);
 
@@ -74,26 +71,28 @@ int main() {
     TMT::Timer logo_timer(1.f);
     TMT::Timer bg_timer(2.f);
 
+    scene_test.load_scene();
+
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
     {
         // Clears the buffer and renders the window color
         tmt_window.clear();
-
+    
         TMT::update_delta_time();
-
-        tmt_window.set_color(Vector3::lerp(base_window_color, Vector3(179, 184, 228) / 255, bg_timer.get_normalized_time()));
-
-        tmt_shader_basic.set_float("fade_time", logo_timer.get_normalized_time());
-
+    
+        tmt_window.set_color(Vector3::lerp(base_window_color, Vector3::to_xyz(Vector3(179, 184, 228)), bg_timer.get_normalized_time()));
+    
+        tmt_shader_basic->set_float("fade_time", logo_timer.get_normalized_time());
+    
         // Renders the object
         scene_test.render();
-
+    
         bg_timer.update();
         if (bg_timer.get_end_status()) {
             logo_timer.update();
         }
-
+    
         // Swaps the buffers and does the poll events
         tmt_window.swap_buffers();
         tmt_window.poll_events();

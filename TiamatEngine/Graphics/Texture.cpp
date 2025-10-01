@@ -20,7 +20,7 @@ void TMT::Texture::load_ppm(Image* image)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	int width, height, nrChannels;
+	int nrChannels;
 	width = image->GetResolution().m_x;
 	height = image->GetResolution().m_y;
 
@@ -48,7 +48,7 @@ void TMT::Texture::load_stbi(const char* file_path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	int width, height, nrChannels;
+	int nrChannels;
 	unsigned char* data = stbi_load(file_path, &width, &height, &nrChannels, 0);
 
 	if (data)
