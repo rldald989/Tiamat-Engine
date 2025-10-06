@@ -19,22 +19,17 @@ namespace TMT {
 		std::string name;
 		std::string vertex;
 		std::string fragment;
-
-		void clear() {
-			name.clear();
-			vertex.clear();
-			fragment.clear();
-		}
 	};
 
 	struct texture_module {
 		std::string name;
 		std::string file_path;
+	};
 
-		void clear() {
-			name.clear();
-			file_path.clear();
-		}
+	struct material_module {
+		std::string name;
+		std::string shader_name;
+		std::string texture_name;
 	};
 
 	class Scene
@@ -76,6 +71,12 @@ namespace TMT {
 
 		int m_position;
 
+		bool found_extension;
+
+		shader_module m_shader_module;
+		texture_module m_texture_module;
+		material_module m_material_module;
+
 		std::string peek(std::vector<std::string> tokens, int ahead = 1) const
 		{
 			if (m_position + ahead < tokens.size()) {
@@ -86,8 +87,11 @@ namespace TMT {
 			}
 		}
 
+		static bool check_extension(std::string ext, std::string data);
+
 		void make_shader_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
 		void make_texture_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
+		void make_material_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
 	};
 
 	

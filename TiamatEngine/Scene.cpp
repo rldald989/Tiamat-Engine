@@ -47,12 +47,11 @@ void TMT::Scene::load_scene()
 		std::string data = "";
 		int count = 0;
 
-		std::string extension;
+		
 		Texture* temp_tex = new Texture();
-		Image* temp_image = new Image();
+		Image* temp_image = new Image("none.ppm", Vector2(0, 0));
 
-		shader_module m_shader_module;
-		texture_module m_texture_module;
+		
 
 		//std::cout << "LOADED ASSET: ";
 		switch (pd->type)
@@ -66,19 +65,20 @@ void TMT::Scene::load_scene()
 		case scene_type::TEXTURE:
 		{
 			make_texture_module(scv, seperated_data, data, count);
-			file_viewer tokenized_string(tokenize_string(data));
-			extension = tokenized_string.while_peek(".", "\0");
-			if (extension != "ppm") {
+			if (!data.find(".ppm")) {
 				temp_tex->load_stbi(m_texture_module.file_path.c_str());
 			}
 			else {
-				temp_tex->load_ppm(new Image());
+				std::cout << "ppm" << std::endl;
+				temp_image->Load(data.c_str());
+				temp_tex->load_ppm(temp_image);
 			}
 			add_texture(m_texture_module.name, temp_tex);
 			break;
 		}
 		case scene_type::MATERIAL:
-			//std::cout << "MATERIAL: " << *pd->value << std::endl;
+			make_material_module(scv, seperated_data, data, count);
+			add_material(m_material_module.name, m_material_module.shader_name, m_material_module.texture_name, Vector3(1, 1, 1));
 			break;
 		case scene_type::MESH_RENDERER:
 			//std::cout << "MESH_RENDERER: " << *pd->value << std::endl;
@@ -268,4 +268,31 @@ void TMT::Scene::make_texture_module(file_viewer<std::string> scv, std::vector<s
 	}
 	std::cout << "TEXTURE DATA: " << "name: " << m_texture_module.name <<
 		"\n dir: " << m_texture_module.file_path << std::endl;
+}
+
+void TMT::Scene::make_material_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
+{
+	while (scv.position < seperated_data.size()) {
+		data = scv.while_peek("\"", "\"");
+		switch (count)
+		{
+		case 0:
+			m_material_module.name = data;
+			break;
+		case 1:
+			m_material_module.shader_name = data;
+			break;
+		case 2:
+			m_material_module.texture_name = data;
+			count = 0;
+			break;
+		default:
+			break;
+		}
+		scv.forward();
+		count++;
+	}
+	std::cout << "MATERIAL DATA: " << "name: " << m_material_module.name <<
+		"\n shader: " << m_material_module.shader_name <<
+		"\n texture: " << m_material_module.texture_name << std::endl;
 }
