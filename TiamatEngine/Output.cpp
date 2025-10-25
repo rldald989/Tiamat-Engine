@@ -80,6 +80,7 @@ void Image::Export()
 // aspects within the file and searches for the size of the image to ensure proper loading
 void Image::Load(const char *image_path)
 {
+    m_output_file_name = image_path;
     m_current_pixel_position = Vector2(0, 0);
     std::string temp_image_data;
     m_in.open(image_path);
@@ -128,7 +129,7 @@ void Image::Load(const char *image_path)
 
 std::string Image::GetFilePath()
 {
-    return m_output_file_name + ".ppm";
+    return m_output_file_name;
 }
 
 std::vector<float> Image::image_to_float(Image& image)
