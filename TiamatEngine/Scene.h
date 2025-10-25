@@ -33,7 +33,7 @@ namespace TMT {
 	};
 
 	struct mesh_renderer_module {
-		std::string index;
+		std::string priority;
 		std::string material_name;
 	};
 
@@ -96,10 +96,10 @@ namespace TMT {
 			}
 		}
 
-		void make_shader_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
-		void make_texture_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
-		void make_material_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
-		void make_mesh_renderer_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
+		void link_shader_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
+		void link_texture_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
+		void link_material_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
+		void link_mesh_renderer_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count);
 	};
 
 	

@@ -50,28 +50,28 @@ void TMT::Scene::load_scene()
 		//std::cout << "LOADED ASSET: ";
 		if(pd->type == scene_type::SHADER)
 		{
-			make_shader_module(scv, seperated_data, data, count);
+			link_shader_data(scv, seperated_data, data, count);
 			add_shader(m_shader_module.name, new Shader(m_shader_module.vertex.c_str(), m_shader_module.fragment.c_str()));
 			count = 0;
 		}
 		else if(pd->type == scene_type::TEXTURE)
 		{
 			Texture* temp_tex = new Texture();
-			make_texture_module(scv, seperated_data, data, count);
+			link_texture_data(scv, seperated_data, data, count);
 			temp_tex->load_stbi(m_texture_module.file_path.c_str());
 			add_texture(m_texture_module.name, temp_tex);
 			count = 0;
 		}
 		else if (pd->type == scene_type::MATERIAL) 
 		{
-			make_material_module(scv, seperated_data, data, count);
+			link_material_data(scv, seperated_data, data, count);
 			add_material(m_material_module.name, m_material_module.shader_name, m_material_module.texture_name, Vector3(1, 1, 1));
 			count = 0;
 		}
 		else if(pd->type == scene_type::MESH_RENDERER)
 		{
-			make_mesh_renderer_module(scv, seperated_data, data, count);
-			add_mesh_renderer(TMT::Quad(), m_mesh_renderer_module.material_name, std::atoi(m_mesh_renderer_module.index.c_str()));
+			link_mesh_renderer_data(scv, seperated_data, data, count);
+			add_mesh_renderer(TMT::Quad(), m_mesh_renderer_module.material_name, std::atoi(m_mesh_renderer_module.priority.c_str()));
 			count = 0;
 		}
 		
@@ -239,7 +239,7 @@ void TMT::Scene::render()
 	}
 }
 
-void TMT::Scene::make_shader_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
+void TMT::Scene::link_shader_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
 {
 	while (scv.position < seperated_data.size()) {
 		data = scv.while_peek("\"", "\"");
@@ -266,7 +266,7 @@ void TMT::Scene::make_shader_module(file_viewer<std::string> scv, std::vector<st
 	//	"\n fragment: " << m_shader_module.fragment << std::endl;
 }
 
-void TMT::Scene::make_texture_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
+void TMT::Scene::link_texture_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
 {
 	while (scv.position < seperated_data.size()) {
 		data = scv.while_peek("\"", "\"");
@@ -289,7 +289,7 @@ void TMT::Scene::make_texture_module(file_viewer<std::string> scv, std::vector<s
 	//	"\n dir: " << m_texture_module.file_path << std::endl;
 }
 
-void TMT::Scene::make_material_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
+void TMT::Scene::link_material_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
 {
 	while (scv.position < seperated_data.size()) {
 		data = scv.while_peek("\"", "\"");
@@ -316,14 +316,14 @@ void TMT::Scene::make_material_module(file_viewer<std::string> scv, std::vector<
 	//	"\n texture: " << m_material_module.texture_name << std::endl;
 }
 
-void TMT::Scene::make_mesh_renderer_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
+void TMT::Scene::link_mesh_renderer_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
 {
 	while (scv.position < seperated_data.size()) {
 		data = scv.while_peek("\"", "\"");
 		switch (count)
 		{
 		case 0:
-			m_mesh_renderer_module.index = data;
+			m_mesh_renderer_module.priority = data;
 			break;
 		case 1:
 			m_mesh_renderer_module.material_name = data;

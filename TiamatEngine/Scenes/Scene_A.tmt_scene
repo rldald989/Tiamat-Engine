@@ -1,5 +1,5 @@
 [S] ("Snake Shader" "Shaders/vertex_basic.glsl" "Shaders/fragment_basic.glsl")
-[S] ("Tiamat Basic Shader" "Shaders/vertex_basic.glsl" "Shaders/fragment_basic.glsl")
+[S] ("Tiamat Basic Shader" "Shaders/vertex_basic.glsl" "Shaders/fragment_basic_fade.glsl")
 [T] ("Snake Texture" "Images/MGS_SolidSnake.png")
 [T] ("Test Texture" "Images/BWIcon.png")
 [M] ("Snake Material" "Tiamat Basic Shader" "Snake Texture")
