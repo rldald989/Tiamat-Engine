@@ -8,7 +8,7 @@ m_file_dir((std::string)m_directory + "/" + (std::string)m_scene_name + ".tmt_sc
 TMT::Scene::~Scene()
 {
 	for (auto& m : m_mesh_renderers) {
-		delete m;
+		delete m.second;
 	}
 
 	for (auto& s : m_shaders) {
@@ -47,56 +47,53 @@ void TMT::Scene::load_scene()
 		std::string data = "";
 		int count = 0;
 
-		
-		Texture* temp_tex = new Texture();
-		Image* temp_image = new Image("none.ppm", Vector2(0, 0));
-
-		
-
 		//std::cout << "LOADED ASSET: ";
-		switch (pd->type)
+		if(pd->type == scene_type::SHADER)
 		{
-		case scene_type::SHADER:
-		
 			make_shader_module(scv, seperated_data, data, count);
 			add_shader(m_shader_module.name, new Shader(m_shader_module.vertex.c_str(), m_shader_module.fragment.c_str()));
-			break;
-		
-		case scene_type::TEXTURE:
-		{
-			make_texture_module(scv, seperated_data, data, count);
-			if (!data.find(".ppm")) {
-				temp_tex->load_stbi(m_texture_module.file_path.c_str());
-			}
-			else {
-				std::cout << "ppm" << std::endl;
-				temp_image->Load(data.c_str());
-				temp_tex->load_ppm(temp_image);
-			}
-			add_texture(m_texture_module.name, temp_tex);
-			break;
+			count = 0;
 		}
-		case scene_type::MATERIAL:
+		else if(pd->type == scene_type::TEXTURE)
+		{
+			Texture* temp_tex = new Texture();
+			make_texture_module(scv, seperated_data, data, count);
+			temp_tex->load_stbi(m_texture_module.file_path.c_str());
+			add_texture(m_texture_module.name, temp_tex);
+			count = 0;
+		}
+		else if (pd->type == scene_type::MATERIAL) 
+		{
 			make_material_module(scv, seperated_data, data, count);
 			add_material(m_material_module.name, m_material_module.shader_name, m_material_module.texture_name, Vector3(1, 1, 1));
-			break;
-		case scene_type::MESH_RENDERER:
-			//std::cout << "MESH_RENDERER: " << *pd->value << std::endl;
-			break;
-		default:
-			break;
+			count = 0;
+		}
+		else if(pd->type == scene_type::MESH_RENDERER)
+		{
+			make_mesh_renderer_module(scv, seperated_data, data, count);
+			add_mesh_renderer(TMT::Quad(), m_mesh_renderer_module.material_name, std::atoi(m_mesh_renderer_module.index.c_str()));
+			count = 0;
 		}
 		
-		if (temp_tex == nullptr) {
-			delete temp_tex;
-			delete temp_image;
-		}
 		
 	}
 
-	for (auto p : parsed_data) {
-		delete p->value;
-		delete p;
+
+	for (auto& m : m_mesh_renderers) {
+		std::cout << "Mesh Renderer: " << m.first << std::endl;
+	}
+
+	for (auto& s : m_shaders) {
+		std::cout << "Shader: " << s.first << std::endl;
+	}
+
+
+	for (auto& t : m_textures) {
+		std::cout << "Texture: " << t.first << std::endl;
+	}
+
+	for (auto& m : m_materials) {
+		std::cout << "Material: " << m.first << std::endl;
 	}
 }
 
@@ -152,19 +149,32 @@ void TMT::Scene::export_scene()
 		m_scene_out << data;
 	}
 
-	for (int i = 0; i < m_mesh_renderers.size(); i++) {
+	for (auto& mr : m_mesh_renderers) {
 		std::string mat;
 		for (auto& m : m_materials) {
-			if (m.second == m_mesh_renderers[i]->m_material) {
+			if (m.second == mr.second->m_material) {
 				mat = m.first;
 			}
 		}
 
-		std::string data = "[MR] (\"" + std::to_string(i) + "\" \"" + m_mesh_renderers[i]->m_mesh.get_name() + "\" \"" + mat + "\")\n";
+		std::string data = "[MR] (\"" + std::to_string(mr.first) + "\" \"" + mat + "\")\n";
 		m_scene_out << data;
 	}
 
 	m_scene_out.close();
+}
+
+void TMT::Scene::add_mesh_renderer(Mesh mesh_type, std::string material, int index)
+{
+	Mesh mesh = mesh_type;		
+	if (!m_materials[material]) {
+		std::cout << "ERROR: invalid material input!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		m_mesh_renderers[index] = new MeshRenderer(mesh, m_materials[material]);
+	}
 }
 
 void TMT::Scene::add_mesh_renderer(Mesh mesh_type, std::string material)
@@ -174,15 +184,10 @@ void TMT::Scene::add_mesh_renderer(Mesh mesh_type, std::string material)
 		std::cout << "ERROR: invalid material input!" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	else 
+	else
 	{
-		m_mesh_renderers.push_back(new MeshRenderer(mesh, m_materials[material]));
+		m_mesh_renderers[m_mesh_renderers.size()+1] = new MeshRenderer(mesh, m_materials[material]);
 	}
-}
-
-void TMT::Scene::add_mesh_renderer(MeshRenderer* mesh_renderer)
-{
-	m_mesh_renderers.push_back(mesh_renderer);
 }
 
 void TMT::Scene::add_shader(std::string name, Shader* shader)
@@ -212,10 +217,25 @@ void TMT::Scene::add_material(std::string name, Material* material)
 	m_materials[name] = material;
 }
 
+TMT::Shader* TMT::Scene::get_shader(std::string shader_name)
+{
+	return m_shaders[shader_name];
+}
+
+TMT::Texture* TMT::Scene::get_texture(std::string texture_name)
+{
+	return m_textures[texture_name];
+}
+
+TMT::Material* TMT::Scene::get_material(std::string material_name)
+{
+	return m_materials[material_name];
+}
+
 void TMT::Scene::render() 
 {
 	for (auto& m : m_mesh_renderers) {
-		m->render();
+		m.second->render();
 	}
 }
 
@@ -241,11 +261,10 @@ void TMT::Scene::make_shader_module(file_viewer<std::string> scv, std::vector<st
 		scv.forward();
 		count++;
 	}
-	std::cout << "SHADER DATA: " << "name: " << m_shader_module.name <<
-		"\n vertex: " << m_shader_module.vertex <<
-		"\n fragment: " << m_shader_module.fragment << std::endl;
+	//std::cout << "SHADER DATA: " << "name: " << m_shader_module.name <<
+	//	"\n vertex: " << m_shader_module.vertex <<
+	//	"\n fragment: " << m_shader_module.fragment << std::endl;
 }
-
 
 void TMT::Scene::make_texture_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
 {
@@ -266,8 +285,8 @@ void TMT::Scene::make_texture_module(file_viewer<std::string> scv, std::vector<s
 		scv.forward();
 		count++;
 	}
-	std::cout << "TEXTURE DATA: " << "name: " << m_texture_module.name <<
-		"\n dir: " << m_texture_module.file_path << std::endl;
+	//std::cout << "TEXTURE DATA: " << "name: " << m_texture_module.name <<
+	//	"\n dir: " << m_texture_module.file_path << std::endl;
 }
 
 void TMT::Scene::make_material_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
@@ -292,7 +311,31 @@ void TMT::Scene::make_material_module(file_viewer<std::string> scv, std::vector<
 		scv.forward();
 		count++;
 	}
-	std::cout << "MATERIAL DATA: " << "name: " << m_material_module.name <<
-		"\n shader: " << m_material_module.shader_name <<
-		"\n texture: " << m_material_module.texture_name << std::endl;
+	//std::cout << "MATERIAL DATA: " << "name: " << m_material_module.name <<
+	//	"\n shader: " << m_material_module.shader_name <<
+	//	"\n texture: " << m_material_module.texture_name << std::endl;
+}
+
+void TMT::Scene::make_mesh_renderer_module(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
+{
+	while (scv.position < seperated_data.size()) {
+		data = scv.while_peek("\"", "\"");
+		switch (count)
+		{
+		case 0:
+			m_mesh_renderer_module.index = data;
+			break;
+		case 1:
+			m_mesh_renderer_module.material_name = data;
+			count = 0;
+			break;
+		default:
+			break;
+		}
+		
+		scv.forward();
+		count++;
+	}
+	//std::cout << "MESH RENDRERER DATA: " << "mesh renderer index: " << m_mesh_renderer_module.index << "\n" 
+	//	<< "material name: " << m_mesh_renderer_module.material_name << std::endl;
 }

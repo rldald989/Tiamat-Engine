@@ -147,4 +147,9 @@
       <Filter>Header Files\Data</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\solid snake.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
