@@ -67,11 +67,11 @@ int main() {
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
-    scene_test.load_scene();
 
     TMT::Timer logo_timer(1.f);
     TMT::Timer bg_timer(2.f);
 
+    scene_test.load_scene();
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -83,7 +83,7 @@ int main() {
     
         tmt_window.set_color(Vector3::lerp(base_window_color, Vector3::to_xyz(Vector3(179, 184, 228)), bg_timer.get_normalized_time()));
     
-        scene_test.get_shader("Tiamat Basic Shader")->set_float("fade_time", logo_timer.get_normalized_time());
+        tmt_shader_basic->set_float("fade_time", logo_timer.get_normalized_time());
     
         // Renders the object
         scene_test.render();
