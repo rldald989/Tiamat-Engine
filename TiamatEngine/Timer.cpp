@@ -12,7 +12,7 @@ TMT::Timer::~Timer()
 
 bool TMT::Timer::get_end_status()
 {
-	return m_time >= m_timer_duration;
+	return m_time >= m_timer_duration && !m_stop;
 }
 
 float TMT::Timer::get_time()

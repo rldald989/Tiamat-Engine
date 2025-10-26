@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Graphics/MeshRenderer.h"
+#include "Object.h"
 
 #include "Parser.h"
 
@@ -58,10 +59,16 @@ namespace TMT {
 
 		void add_material(std::string name, Material* material);
 
+		void add_object(std::string name, const Object& object);
+
+		void add_object(std::string name, std::string matrix_name, const tmt_transform& transform);
+
 		Shader* get_shader(std::string shader_name);
 		Texture* get_texture(std::string texture_name);
 		Material* get_material(std::string material_name);
+		Object& get_object(std::string object_name);
 
+		void update();
 		void render();
 
 	private:
@@ -76,6 +83,7 @@ namespace TMT {
 		std::map<std::string, Texture*> m_textures;
 		std::map<std::string, Material*> m_materials;
 		std::map<std::string, Shader*> m_shaders;
+		std::map<std::string, Object> m_objects;
 
 		int m_position;
 

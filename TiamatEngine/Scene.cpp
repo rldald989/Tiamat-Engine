@@ -217,6 +217,16 @@ void TMT::Scene::add_material(std::string name, Material* material)
 	m_materials[name] = material;
 }
 
+void TMT::Scene::add_object(std::string name, const Object& object)
+{
+	m_objects[name] = object;
+}
+
+void TMT::Scene::add_object(std::string name, std::string matrix_name, const tmt_transform& transform)
+{
+	m_objects[name] = Object(matrix_name, transform);
+}
+
 TMT::Shader* TMT::Scene::get_shader(std::string shader_name)
 {
 	return m_shaders[shader_name];
@@ -230,6 +240,22 @@ TMT::Texture* TMT::Scene::get_texture(std::string texture_name)
 TMT::Material* TMT::Scene::get_material(std::string material_name)
 {
 	return m_materials[material_name];
+}
+
+TMT::Object& TMT::Scene::get_object(std::string object_name)
+{
+	return m_objects[object_name];
+}
+
+void TMT::Scene::update() {
+	for (auto& s : m_shaders) {
+		for (auto& o : m_objects) {
+			s.second->set_matrix4(o.second.matrix_name.c_str(), o.second.get_transform());
+		}
+	}
+	for (auto& o : m_objects) {
+		o.second.update();
+	}
 }
 
 void TMT::Scene::render() 

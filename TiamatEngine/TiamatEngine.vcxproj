@@ -141,6 +141,7 @@
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Matrix\Matrix2.cpp" />
     <ClCompile Include="Matrix\Matrix3.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Output.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Graphics\Window.h" />
     <ClInclude Include="Matrix\Matrix2.h" />
     <ClInclude Include="Matrix\Matrix3.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Output.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Scene.h" />

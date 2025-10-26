@@ -55,7 +55,7 @@ bool Vector2::operator==(const Vector2 &other) const
     return this->m_x == other.m_x && m_y == other.m_y;
 }
 
-Vector2 Vector2::lerp(Vector2& a, Vector2& b, float t)
+Vector2 Vector2::lerp(Vector2 a, Vector2 b, float t)
 {
     return a + (b - a) * t;
 }

@@ -15,8 +15,8 @@
 #include "Graphics/MeshRenderer.h"
 
 #include "Scene.h"
-
 #include "Timer.h"
+#include "Object.h"
 
 #include "stb_image.h"
 
@@ -62,16 +62,21 @@ int main() {
 
     Vector3 test_color(1, 1, 1);
 
+    float logo_fall = .05f;
+
+    TMT::Object test_object("model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
+
     scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
     scene_test.add_texture("Test Texture", test_texture);
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
+    scene_test.add_object("Test Object", test_object);
+
     scene_test.load_scene();
 
     TMT::Timer logo_timer(1.f);
     TMT::Timer bg_timer(2.f);
-
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -84,6 +89,28 @@ int main() {
         tmt_window.set_color(Vector3::lerp(base_window_color, Vector3::to_xyz(Vector3(179, 184, 228)), bg_timer.get_normalized_time()));
     
         scene_test.get_shader("Tiamat Basic Shader")->set_float("fade_time", logo_timer.get_normalized_time());
+        
+        TMT::Object& t_obj = scene_test.get_object("Test Object");
+
+        if (t_obj.transform.position.y > 0 && logo_timer.get_normalized_time() > 0) 
+        {
+            t_obj.move(0, -logo_fall * TMT::delta_time);
+        }
+
+        if (logo_timer.get_end_status()) {
+            scene_test.get_texture("Test Texture")->load_stbi("Images/MGS_SolidSnake.png");
+            logo_timer.stop();
+        }
+
+        // Wanna move the logo? Alright.
+        if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_A) == GLFW_PRESS) {
+            t_obj.move(-1 * TMT::delta_time, 0);
+        }
+        else if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_A) == GLFW_PRESS) {
+            t_obj.move(1 * TMT::delta_time, 0);
+        }
+        
+        scene_test.update();
     
         // Renders the object
         scene_test.render();
@@ -98,7 +125,8 @@ int main() {
         tmt_window.poll_events();
     }
 
-
+    // To insure that this is the texture that gets saved
+    scene_test.get_texture("Test Texture")->load_stbi("Images/BWIcon.png");
 
     scene_test.export_scene();
     //tmt_shader_basic.unuse();

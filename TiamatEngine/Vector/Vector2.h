@@ -24,7 +24,7 @@ public:
     Vector2 operator/(const float& other);
     bool operator==(const Vector2& other) const;
 
-    static Vector2 lerp(Vector2& a, Vector2& b, float t);
+    static Vector2 lerp(Vector2 a, Vector2 b, float t);
     static Vector2 querp(Vector2& a, Vector2& b, Vector2& c, float t);
 
     float dot(const Vector2& other);
