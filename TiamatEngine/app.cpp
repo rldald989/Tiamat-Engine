@@ -7,21 +7,26 @@
 #include "Graphics/Buffers.h"
 #include "Graphics/Shader.h"
 
-#include "Output.h"
-#include "Filters.h"
+#include "Graphics/Output.h"
+#include "Graphics/Filters.h"
 
 #include "Graphics/Mesh.h"
 #include "Graphics/Material.h"
 #include "Graphics/MeshRenderer.h"
 
-#include "Scene.h"
-#include "Timer.h"
-#include "Object.h"
+#include "Engine Components/Scene.h"
+#include "Engine Components/Timer.h"
+#include "Engine Components/Camera.h"
 
 #include "stb_image.h"
 
 // Define delta time otherwise code within classes using delta_time will not work properly or at all
 float TMT::delta_time = 0.0f;
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
 
 int main() {
 
@@ -65,6 +70,7 @@ int main() {
     float logo_fall = .05f;
 
     TMT::Object test_object("model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
+    TMT::Camera* test_camera = new TMT::Camera(tmt_window, TMT::tmt_transform(glm::vec2(0, 0), glm::vec2(1, 1), 0));
 
     scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
     scene_test.add_texture("Test Texture", test_texture);
@@ -72,6 +78,7 @@ int main() {
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
     scene_test.add_object("Test Object", test_object);
+    scene_test.add_object("Test Camera", *test_camera);
 
     scene_test.load_scene();
 
@@ -83,6 +90,9 @@ int main() {
     {
         // Clears the buffer and renders the window color
         tmt_window.clear();
+
+        glfwGetFramebufferSize(tmt_window.get_window(), &tmt_window.get_width(), &tmt_window.get_height());
+        framebuffer_size_callback(tmt_window.get_window(), tmt_window.get_size().m_x, tmt_window.get_size().m_y);
     
         TMT::update_delta_time();
     
@@ -106,8 +116,12 @@ int main() {
         if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_A) == GLFW_PRESS) {
             t_obj.move(-1 * TMT::delta_time, 0);
         }
-        else if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_A) == GLFW_PRESS) {
+        else if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_D) == GLFW_PRESS) {
             t_obj.move(1 * TMT::delta_time, 0);
+        }
+
+        if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_P) == GLFW_PRESS) {
+            std::cout << "Window size: " << tmt_window.get_size().m_x << ", " << tmt_window.get_size().m_y << std::endl;
         }
         
         scene_test.update();
@@ -124,6 +138,8 @@ int main() {
         tmt_window.swap_buffers();
         tmt_window.poll_events();
     }
+
+    delete test_camera;
 
     // To insure that this is the texture that gets saved
     scene_test.get_texture("Test Texture")->load_stbi("Images/BWIcon.png");

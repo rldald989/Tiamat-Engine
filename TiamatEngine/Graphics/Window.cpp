@@ -24,6 +24,21 @@ TMT::Window::~Window()
 	glfwTerminate();
 }
 
+Vector2 TMT::Window::get_size()
+{
+	return Vector2(m_width, m_height);
+}
+
+int& TMT::Window::get_width()
+{
+	return m_width;
+}
+
+int& TMT::Window::get_height()
+{
+	return m_height;
+}
+
 void TMT::Window::set_color(Vector3 color)
 {
 	m_color = color;

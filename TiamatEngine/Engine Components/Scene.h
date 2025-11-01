@@ -7,10 +7,10 @@
 
 #include <iostream>
 
-#include "Graphics/MeshRenderer.h"
+#include "../Graphics/MeshRenderer.h"
 #include "Object.h"
 
-#include "Parser.h"
+#include "../Data/Parser.h"
 
 namespace TMT {
 

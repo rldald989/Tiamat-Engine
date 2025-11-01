@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
 #include "string"
-#include "Vector/Vector2.h"
-#include "Vector/Vector3.h"
+#include "../Vector/Vector2.h"
+#include "../Vector/Vector3.h"
 #include <fstream>
 #include <map>
 #include <unordered_map>

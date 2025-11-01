@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/MeshRenderer.h"
+#include "../Graphics/MeshRenderer.h"
 #include "Time.h"
 
 namespace TMT {
@@ -40,8 +40,8 @@ namespace TMT {
 
 		glm::mat4 get_transform();
 
-	private:
-
+	protected:
+		int polarity = 1;
 		glm::mat4 m_model_transform;
 		//std::vector<tmt_module> m_modules;
 	};

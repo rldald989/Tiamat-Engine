@@ -2,9 +2,17 @@
 
 #include "glew.h"
 #include "glfw3.h"
+#include "../Vector/Vector2.h"
 #include "../Vector/Vector3.h"
 
 namespace TMT {
+
+
+	struct IVector2 {
+		int x;
+		int y;
+	};
+
 	class Window
 	{
 	public:
@@ -13,6 +21,11 @@ namespace TMT {
 		~Window();
 
 		GLFWwindow* get_window() { return m_window;  }
+
+		Vector2 get_size();
+
+		int& get_width();
+		int& get_height();
 
 		void set_color(Vector3 color);
 

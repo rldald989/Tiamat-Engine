@@ -3,7 +3,7 @@
 
 #include <glew.h>
 #include <glfw3.h>
-#include "../Output.h"
+#include "Output.h"
 
 namespace TMT {
 	struct Texture
