@@ -15,12 +15,6 @@ namespace TMT {
 		tmt_transform(glm::vec2 pos, glm::vec2 scl, float rot) : position(pos), scale(scl), rotation(rot) {}
 	};
 
-	//struct tmt_module 
-	//{
-	//	virtual void update();
-	//
-	//};
-
 	class Object
 	{
 	public:
@@ -29,20 +23,29 @@ namespace TMT {
 		tmt_transform transform;
 
 		Object();
-		Object(std::string _matrix_name, const tmt_transform& _transform);
+		Object(std::string name, const std::string& _matrix_name, const tmt_transform& _transform);
 		~Object();
 
-		virtual void update();
+		virtual glm::mat4 update();
+		void update_children();
 
 		void move(float x, float y);
 		void scale(float x, float y);
 		void rotate(float degrees);
 
-		glm::mat4 get_transform();
+		void add_child(Object* child);
+		Object* get_child(std::string name);
+		std::map<std::string, Object*> get_children();
+
+		glm::mat4& get_transform();
+
+		friend class Camera;
+		friend class Scene;
 
 	protected:
-		int polarity = 1;
 		glm::mat4 m_model_transform;
-		//std::vector<tmt_module> m_modules;
+
+		std::string m_name;
+		std::map<std::string,Object*> m_child_objects;
 	};
 }

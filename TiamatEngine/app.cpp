@@ -41,6 +41,8 @@ int main() {
 
     glewInit();
 
+    glDisable(GL_DEPTH_TEST);
+
     // Flips stbi images on load
     stbi_set_flip_vertically_on_load(true);
 
@@ -69,16 +71,16 @@ int main() {
 
     float logo_fall = .05f;
 
-    TMT::Object test_object("model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
-    TMT::Camera* test_camera = new TMT::Camera(tmt_window, TMT::tmt_transform(glm::vec2(0, 0), glm::vec2(1, 1), 0));
+    TMT::Object* test_object = new TMT::Object("Test Object", "model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
+    TMT::Camera* test_camera = new TMT::Camera("Test Camera", tmt_window, TMT::tmt_transform(glm::vec2(0.f, 0.f), glm::vec2(1, 1), 0));
 
     scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
     scene_test.add_texture("Test Texture", test_texture);
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
-    scene_test.add_object("Test Object", test_object);
-    scene_test.add_object("Test Camera", *test_camera);
+    scene_test.add_object(test_camera);
+    scene_test.add_object(test_object);
 
     scene_test.load_scene();
 
@@ -100,7 +102,7 @@ int main() {
     
         scene_test.get_shader("Tiamat Basic Shader")->set_float("fade_time", logo_timer.get_normalized_time());
         
-        TMT::Object& t_obj = scene_test.get_object("Test Object");
+        TMT::Object& t_obj = *scene_test.get_object("Test Object");
 
         if (t_obj.transform.position.y > 0 && logo_timer.get_normalized_time() > 0) 
         {
@@ -138,8 +140,6 @@ int main() {
         tmt_window.swap_buffers();
         tmt_window.poll_events();
     }
-
-    delete test_camera;
 
     // To insure that this is the texture that gets saved
     scene_test.get_texture("Test Texture")->load_stbi("Images/BWIcon.png");
