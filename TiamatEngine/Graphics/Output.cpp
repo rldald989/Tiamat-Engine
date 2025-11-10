@@ -127,6 +127,11 @@ void Image::Load(const char *image_path)
     counter = 0;
 }
 
+int Image::Size()
+{
+    return m_resolution.m_x * m_resolution.m_y;
+}
+
 std::string Image::GetFilePath()
 {
     return m_output_file_name;

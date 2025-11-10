@@ -55,6 +55,10 @@ int main() {
     test_image.Load("raytraced.ppm");
 
     //This generates an image that is black and white noise using the WritePixel function
+    for (int i = 0; i < test_image.Size(); i++) 
+    {
+        test_image.WritePixel(rand_bw());
+    }
 
     // Our scene, holds all scene data, the first parameter is the name, and the second parameter is the directory the scene gets saved to
     TMT::Scene scene_test("Scene A", "Scenes");
@@ -65,7 +69,8 @@ int main() {
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
     TMT::Texture* test_texture = new TMT::Texture();
     // Here we load the "test_image" image
-    test_texture->load_stbi("Images/BWIcon.png");
+    //test_texture->load_stbi("Images/BWIcon.png");
+    test_texture->load_ppm(&test_image);
 
     Vector3 test_color(1, 1, 1);
 
@@ -97,7 +102,7 @@ int main() {
         framebuffer_size_callback(tmt_window.get_window(), tmt_window.get_size().m_x, tmt_window.get_size().m_y);
     
         TMT::update_delta_time();
-    
+
         tmt_window.set_color(Vector3::lerp(base_window_color, Vector3::to_xyz(Vector3(179, 184, 228)), bg_timer.get_normalized_time()));
     
         scene_test.get_shader("Tiamat Basic Shader")->set_float("fade_time", logo_timer.get_normalized_time());

@@ -27,6 +27,8 @@ namespace TMT {
 		int& get_width();
 		int& get_height();
 
+		float get_aspect_ratio();
+
 		void set_color(Vector3 color);
 
 		void enable_alpha();
