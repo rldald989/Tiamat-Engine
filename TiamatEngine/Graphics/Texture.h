@@ -13,7 +13,7 @@ namespace TMT {
 
 		int width, height;
 
-		void load_ppm(Image* image);
+		void load_ppm(Image& image);
 		void load_stbi(const char* file_path);
 		void bind();
 	};

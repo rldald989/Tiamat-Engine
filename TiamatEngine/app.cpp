@@ -51,14 +51,16 @@ int main() {
 
     // An image, you can write to it or load your own ppm image using the Load function
     Image test_image("noise.ppm", Vector2(128, 128));
-
-    test_image.Load("raytraced.ppm");
+    test_image.Init();
 
     //This generates an image that is black and white noise using the WritePixel function
     for (int i = 0; i < test_image.Size(); i++) 
     {
         test_image.WritePixel(rand_bw());
     }
+
+    // This will export our image in the ppm format
+    test_image.Export();
 
     // Our scene, holds all scene data, the first parameter is the name, and the second parameter is the directory the scene gets saved to
     TMT::Scene scene_test("Scene A", "Scenes");
@@ -70,7 +72,7 @@ int main() {
     TMT::Texture* test_texture = new TMT::Texture();
     // Here we load the "test_image" image
     //test_texture->load_stbi("Images/BWIcon.png");
-    test_texture->load_ppm(&test_image);
+    test_texture->load_ppm(test_image);
 
     Vector3 test_color(1, 1, 1);
 
@@ -115,7 +117,7 @@ int main() {
         }
 
         if (logo_timer.get_end_status()) {
-            scene_test.get_texture("Test Texture")->load_stbi("Images/MGS_SolidSnake.png");
+            //scene_test.get_texture("Test Texture")->load_stbi("Images/MGS_SolidSnake.png");
             logo_timer.stop();
         }
 
@@ -147,7 +149,7 @@ int main() {
     }
 
     // To insure that this is the texture that gets saved
-    scene_test.get_texture("Test Texture")->load_stbi("Images/BWIcon.png");
+    scene_test.get_texture("Test Texture")->load_ppm(test_image);
 
     scene_test.export_scene();
     //tmt_shader_basic.unuse();

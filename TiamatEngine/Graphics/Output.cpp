@@ -9,7 +9,7 @@ Image::Image(const char *output_file_name, Vector2 resolution) : m_resolution(re
    
 }
 
-Image::Image(const Image& image) : m_out(image.m_output_file_name), m_resolution(image.m_resolution), m_output_file_name(image.m_output_file_name), m_current_pixel_position(0, 0)
+Image::Image(const Image& image) : m_resolution(image.m_resolution), m_output_file_name(image.m_output_file_name), m_current_pixel_position(0, 0)
 {
 }
 Image::~Image()
@@ -95,10 +95,7 @@ void Image::Load(const char *image_path)
 
         if(counter == 3){
             m_resolution.m_y = atoi(temp_image_data.c_str());
-            Init();
         }
-
-        
 
         if(counter >= 5){
 
@@ -125,6 +122,7 @@ void Image::Load(const char *image_path)
         
     }
     counter = 0;
+    m_in.close();
 }
 
 int Image::Size()

@@ -1,4 +1,4 @@
 [S] ("Tiamat Basic Shader" "Shaders/vertex_basic.glsl" "Shaders/fragment_basic_fade.glsl")
-[T] ("Test Texture" "Images/BWIcon.png")
+[T] ("Test Texture" "noise.ppm")
 [M] ("Test Material" "Tiamat Basic Shader" "Test Texture")
 [MR] ("1" "Test Material")

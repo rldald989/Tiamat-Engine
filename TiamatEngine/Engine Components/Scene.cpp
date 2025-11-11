@@ -62,7 +62,25 @@ void TMT::Scene::load_scene()
 		{
 			Texture* temp_tex = new Texture();
 			link_texture_data(scv, seperated_data, data, count);
-			temp_tex->load_stbi(m_texture_module.file_path.c_str());
+			string_viewer temp_scv(m_texture_module.file_path);
+			std::string ext_data;
+			while (temp_scv.position < m_texture_module.file_path.length())
+			{
+				ext_data = temp_scv.while_peek('.', '\0');
+				temp_scv.forward();
+			}
+
+			if (ext_data == "ppm")
+			{
+				Image temp_image = Image();
+				temp_image.Load(m_texture_module.file_path.c_str());
+				temp_tex->load_ppm(temp_image);
+			}
+			else
+			{
+				temp_tex->load_stbi(m_texture_module.file_path.c_str());
+			}
+
 			add_texture(m_texture_module.name, temp_tex);
 			count = 0;
 		}
