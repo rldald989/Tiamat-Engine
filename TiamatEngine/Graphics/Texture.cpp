@@ -3,13 +3,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../stb_image.h"
 
-
-
-void TMT::Texture::load_ppm(Image* image)
+void TMT::Texture::load_ppm(Image& image)
 {
-	m_local_file_path = image->GetFilePath();
+	m_local_file_path = image.GetFilePath();
 
-	std::vector<float> image_data = Image::image_to_float(*image);
+	std::vector<float> image_data = Image::image_to_float(image);
 
 	glGenTextures(1, &m_texture_id);
 
@@ -21,8 +19,8 @@ void TMT::Texture::load_ppm(Image* image)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int nrChannels;
-	width = image->GetResolution().m_x;
-	height = image->GetResolution().m_y;
+	width = image.GetResolution().m_x;
+	height = image.GetResolution().m_y;
 
 	if (image_data.size() > 0)
 	{

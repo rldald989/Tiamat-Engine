@@ -39,6 +39,11 @@ int& TMT::Window::get_height()
 	return m_height;
 }
 
+float TMT::Window::get_aspect_ratio()
+{
+	return static_cast<float>(m_width) / static_cast<float>(m_height);
+}
+
 void TMT::Window::set_color(Vector3 color)
 {
 	m_color = color;

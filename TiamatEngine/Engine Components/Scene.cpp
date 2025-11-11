@@ -23,6 +23,10 @@ TMT::Scene::~Scene()
 	for (auto& m : m_materials) {
 		delete m.second;
 	}
+
+	for (auto& o : m_objects) {
+		delete o.second;
+	}
 }
 
 void TMT::Scene::load_scene()
@@ -58,7 +62,25 @@ void TMT::Scene::load_scene()
 		{
 			Texture* temp_tex = new Texture();
 			link_texture_data(scv, seperated_data, data, count);
-			temp_tex->load_stbi(m_texture_module.file_path.c_str());
+			string_viewer temp_scv(m_texture_module.file_path);
+			std::string ext_data;
+			while (temp_scv.position < m_texture_module.file_path.length())
+			{
+				ext_data = temp_scv.while_peek('.', '\0');
+				temp_scv.forward();
+			}
+
+			if (ext_data == "ppm")
+			{
+				Image temp_image = Image();
+				temp_image.Load(m_texture_module.file_path.c_str());
+				temp_tex->load_ppm(temp_image);
+			}
+			else
+			{
+				temp_tex->load_stbi(m_texture_module.file_path.c_str());
+			}
+
 			add_texture(m_texture_module.name, temp_tex);
 			count = 0;
 		}
@@ -162,6 +184,7 @@ void TMT::Scene::export_scene()
 	}
 
 	m_scene_out.close();
+
 }
 
 void TMT::Scene::add_mesh_renderer(Mesh mesh_type, std::string material, int index)
@@ -217,14 +240,14 @@ void TMT::Scene::add_material(std::string name, Material* material)
 	m_materials[name] = material;
 }
 
-void TMT::Scene::add_object(std::string name, const Object& object)
+void TMT::Scene::add_object(Object* object)
 {
-	m_objects[name] = object;
+	m_objects[object->m_name] = object;
 }
 
 void TMT::Scene::add_object(std::string name, std::string matrix_name, const tmt_transform& transform)
 {
-	m_objects[name] = Object(matrix_name, transform);
+	m_objects[name] = new Object(name, matrix_name, transform);
 }
 
 TMT::Shader* TMT::Scene::get_shader(std::string shader_name)
@@ -242,19 +265,25 @@ TMT::Material* TMT::Scene::get_material(std::string material_name)
 	return m_materials[material_name];
 }
 
-TMT::Object& TMT::Scene::get_object(std::string object_name)
+TMT::Object* TMT::Scene::get_object(std::string object_name)
 {
 	return m_objects[object_name];
 }
 
-void TMT::Scene::update() {
+void TMT::Scene::update() 
+{
 	for (auto& s : m_shaders) {
 		for (auto& o : m_objects) {
-			s.second->set_matrix4(o.second.matrix_name.c_str(), o.second.get_transform());
+			s.second->set_matrix4(o.second->matrix_name.c_str(), o.second->update(), GL_FALSE);
+			for (auto& cs : o.second->get_children()) {
+				if (m_objects.find(o.first) != m_objects.end()) {
+					s.second->set_matrix4(cs.second->matrix_name.c_str(), cs.second->update(), GL_FALSE);
+				}
+				else {
+					continue;
+				}
+			}
 		}
-	}
-	for (auto& o : m_objects) {
-		o.second.update();
 	}
 }
 

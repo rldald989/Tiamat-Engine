@@ -12,7 +12,6 @@ class Image
 private:
     std::string m_file_data;
     std::string m_output_file_name;
-    std::vector<Vector3> m_image_data;
     std::unordered_map<Vector2, Vector3> m_mapped_image_data;
     Vector2 m_current_pixel_position;
     std::ofstream m_out;
@@ -37,6 +36,8 @@ public:
     void Export();
 
     void Load(const char* image_path);
+
+    int Size();
 
     std::string GetFilePath();
 

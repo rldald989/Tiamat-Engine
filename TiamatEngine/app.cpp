@@ -41,6 +41,8 @@ int main() {
 
     glewInit();
 
+    glDisable(GL_DEPTH_TEST);
+
     // Flips stbi images on load
     stbi_set_flip_vertically_on_load(true);
 
@@ -49,10 +51,16 @@ int main() {
 
     // An image, you can write to it or load your own ppm image using the Load function
     Image test_image("noise.ppm", Vector2(128, 128));
-
-    test_image.Load("raytraced.ppm");
+    test_image.Init();
 
     //This generates an image that is black and white noise using the WritePixel function
+    for (int i = 0; i < test_image.Size(); i++) 
+    {
+        test_image.WritePixel(rand_bw());
+    }
+
+    // This will export our image in the ppm format
+    test_image.Export();
 
     // Our scene, holds all scene data, the first parameter is the name, and the second parameter is the directory the scene gets saved to
     TMT::Scene scene_test("Scene A", "Scenes");
@@ -63,22 +71,23 @@ int main() {
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
     TMT::Texture* test_texture = new TMT::Texture();
     // Here we load the "test_image" image
-    test_texture->load_stbi("Images/BWIcon.png");
+    //test_texture->load_stbi("Images/BWIcon.png");
+    test_texture->load_ppm(test_image);
 
     Vector3 test_color(1, 1, 1);
 
     float logo_fall = .05f;
 
-    TMT::Object test_object("model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
-    TMT::Camera* test_camera = new TMT::Camera(tmt_window, TMT::tmt_transform(glm::vec2(0, 0), glm::vec2(1, 1), 0));
+    TMT::Object* test_object = new TMT::Object("Test Object", "model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
+    TMT::Camera* test_camera = new TMT::Camera("Test Camera", tmt_window, TMT::tmt_transform(glm::vec2(0.f, 0.f), glm::vec2(1, 1), 0));
 
     scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
     scene_test.add_texture("Test Texture", test_texture);
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
-    scene_test.add_object("Test Object", test_object);
-    scene_test.add_object("Test Camera", *test_camera);
+    scene_test.add_object(test_camera);
+    scene_test.add_object(test_object);
 
     scene_test.load_scene();
 
@@ -95,12 +104,12 @@ int main() {
         framebuffer_size_callback(tmt_window.get_window(), tmt_window.get_size().m_x, tmt_window.get_size().m_y);
     
         TMT::update_delta_time();
-    
+
         tmt_window.set_color(Vector3::lerp(base_window_color, Vector3::to_xyz(Vector3(179, 184, 228)), bg_timer.get_normalized_time()));
     
         scene_test.get_shader("Tiamat Basic Shader")->set_float("fade_time", logo_timer.get_normalized_time());
         
-        TMT::Object& t_obj = scene_test.get_object("Test Object");
+        TMT::Object& t_obj = *scene_test.get_object("Test Object");
 
         if (t_obj.transform.position.y > 0 && logo_timer.get_normalized_time() > 0) 
         {
@@ -108,7 +117,7 @@ int main() {
         }
 
         if (logo_timer.get_end_status()) {
-            scene_test.get_texture("Test Texture")->load_stbi("Images/MGS_SolidSnake.png");
+            //scene_test.get_texture("Test Texture")->load_stbi("Images/MGS_SolidSnake.png");
             logo_timer.stop();
         }
 
@@ -139,10 +148,8 @@ int main() {
         tmt_window.poll_events();
     }
 
-    delete test_camera;
-
     // To insure that this is the texture that gets saved
-    scene_test.get_texture("Test Texture")->load_stbi("Images/BWIcon.png");
+    scene_test.get_texture("Test Texture")->load_ppm(test_image);
 
     scene_test.export_scene();
     //tmt_shader_basic.unuse();
