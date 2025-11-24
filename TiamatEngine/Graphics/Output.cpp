@@ -267,6 +267,11 @@ Image Image::operator/(Image& other)
     return result_image;
 }
 
+Image Image::operator=(const Image& other)
+{
+    return Image(other);
+}
+
 // Simply gets the resolution of the image, whether set manually or loaded in
 Vector2 Image::GetResolution()
 {

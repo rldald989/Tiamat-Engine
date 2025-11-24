@@ -32,8 +32,10 @@ Vector2 kernel_3X3[] = {
     Vector2(-1, 0)
 };
 
-void BoxBlur(Image& a, Image& b, Vector2 canvSize) {
+Image BoxBlur(Image& a, Vector2 canvSize) {
     std::unordered_map<Vector2, Vector3> data = a.GetImageData();
+
+    Image b(a.GetFilePath().c_str(), a.GetResolution());
 
     Vector2 current_image_pixel(0, 0);
 
@@ -61,4 +63,6 @@ void BoxBlur(Image& a, Image& b, Vector2 canvSize) {
             current_image_pixel.m_y++;
         }
     }
+
+    return b;
 }

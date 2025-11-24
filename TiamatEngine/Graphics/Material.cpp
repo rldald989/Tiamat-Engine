@@ -7,6 +7,7 @@ TMT::Material::Material(Shader* shader, Texture* texture, Vector3 color) : m_sha
 
 TMT::Material::~Material()
 {
+	
 }
 
 void TMT::Material::draw_elements(unsigned int nrOfIndices, unsigned int* indices)

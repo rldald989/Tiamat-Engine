@@ -22,6 +22,9 @@ TMT::Scene::~Scene()
 
 	for (auto& m : m_materials) {
 		delete m.second;
+		for (auto& on : m.second->m_object_names) {
+			delete on;
+		}
 	}
 
 	for (auto& o : m_objects) {
@@ -187,6 +190,10 @@ void TMT::Scene::export_scene()
 
 }
 
+void TMT::Scene::init_scene()
+{
+}
+
 void TMT::Scene::add_mesh_renderer(Mesh mesh_type, std::string material, int index)
 {
 	Mesh mesh = mesh_type;		
@@ -240,14 +247,41 @@ void TMT::Scene::add_material(std::string name, Material* material)
 	m_materials[name] = material;
 }
 
-void TMT::Scene::add_object(Object* object)
+void TMT::Scene::append_material(const char* material_name, const char* object_name)
 {
-	m_objects[object->m_name] = object;
+	for (auto& o : m_objects) {
+
+		if (m_materials.find(material_name) != m_materials.end()) 
+		{
+			if (o.second->m_name == object_name) {
+				m_materials[material_name]->m_object_names.push_back(new std::string(object_name));
+			}
+		}
+	}
 }
 
-void TMT::Scene::add_object(std::string name, std::string matrix_name, const tmt_transform& transform)
+void TMT::Scene::add_object(Object* object, const char* linked_material)
+{
+	m_objects[object->m_name] = object;
+	if (m_materials.find(linked_material) != m_materials.end()) {
+		m_materials[linked_material]->m_object_names.push_back(new std::string(object->m_name));
+	}
+}
+
+void TMT::Scene::add_object(Object* object, const bool& shader_all)
+{
+	m_objects[object->m_name] = object;
+	for (auto& m : m_materials) {
+		m.second->m_object_names.push_back(new std::string(object->m_name));
+	}
+}
+
+void TMT::Scene::add_object(std::string name, std::string matrix_name, const tmt_transform& transform, const char* linked_material)
 {
 	m_objects[name] = new Object(name, matrix_name, transform);
+	if (m_materials.find(linked_material) != m_materials.end()) {
+		m_materials[linked_material]->m_object_names.push_back(new std::string(name));
+	}
 }
 
 TMT::Shader* TMT::Scene::get_shader(std::string shader_name)
@@ -270,28 +304,33 @@ TMT::Object* TMT::Scene::get_object(std::string object_name)
 	return m_objects[object_name];
 }
 
-void TMT::Scene::update() 
+void TMT::Scene::render() 
 {
-	for (auto& s : m_shaders) {
-		for (auto& o : m_objects) {
-			s.second->set_matrix4(o.second->matrix_name.c_str(), o.second->update(), GL_FALSE);
-			for (auto& cs : o.second->get_children()) {
-				if (m_objects.find(o.first) != m_objects.end()) {
-					s.second->set_matrix4(cs.second->matrix_name.c_str(), cs.second->update(), GL_FALSE);
+	
+	for (auto& mr : m_mesh_renderers) 
+	{
+		Shader& shader = *mr.second->m_material->m_shader;
+		for (auto& on : mr.second->m_material->m_object_names)
+		{
+			for (auto& o : m_objects) {
+				std::optional<std::string> parent = o.second->m_parent;
+				if (o.second->m_name == *on)
+				{
+					if (parent.has_value() && m_objects.find(parent.value()) != m_objects.end())
+						shader.set_matrix4(o.second->matrix_name.c_str(), m_objects[parent.value()]->m_final_transform * o.second->update());
+					else
+						shader.set_matrix4(o.second->matrix_name.c_str(), o.second->update());
+
+					if (o.second->matrix_name != "camera_transform")
+						mr.second->render();
 				}
-				else {
-					continue;
-				}
+
 			}
 		}
 	}
-}
 
-void TMT::Scene::render() 
-{
-	for (auto& m : m_mesh_renderers) {
-		m.second->render();
-	}
+
+	
 }
 
 void TMT::Scene::link_shader_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)

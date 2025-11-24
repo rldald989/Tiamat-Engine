@@ -2,6 +2,7 @@
 
 #include "../Graphics/MeshRenderer.h"
 #include "Time.h"
+#include <optional>
 
 namespace TMT {
 
@@ -15,6 +16,8 @@ namespace TMT {
 		tmt_transform(glm::vec2 pos, glm::vec2 scl, float rot) : position(pos), scale(scl), rotation(rot) {}
 	};
 
+	
+
 	class Object
 	{
 	public:
@@ -27,15 +30,16 @@ namespace TMT {
 		~Object();
 
 		virtual glm::mat4 update();
-		void update_children();
 
 		void move(float x, float y);
 		void scale(float x, float y);
 		void rotate(float degrees);
 
-		void add_child(Object* child);
-		Object* get_child(std::string name);
-		std::map<std::string, Object*> get_children();
+		void local_move(float x, float y);
+		void local_scale(float x, float y);
+		void local_rotate(float degrees);
+
+		void parent(Object& to_child);
 
 		glm::mat4& get_transform();
 
@@ -44,8 +48,11 @@ namespace TMT {
 
 	protected:
 		glm::mat4 m_model_transform;
+		glm::mat4 m_local_transform;
+		glm::mat4 m_final_transform;
 
 		std::string m_name;
-		std::map<std::string,Object*> m_child_objects;
+
+		std::optional<std::string> m_parent;
 	};
 }

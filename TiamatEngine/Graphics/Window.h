@@ -6,8 +6,6 @@
 #include "../Vector/Vector3.h"
 
 namespace TMT {
-
-
 	struct IVector2 {
 		int x;
 		int y;
@@ -39,11 +37,18 @@ namespace TMT {
 
 		void poll_events();
 
+		void update_framebuffer();
+
 	private:
 		int m_width, m_height;
 		const char* m_name;
 		GLFWwindow* m_window;
 		Vector3 m_color;
+
+		void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+		{
+			glViewport(0, 0, width, height);
+		}
 
 	};
 };

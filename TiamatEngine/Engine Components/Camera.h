@@ -3,7 +3,8 @@
 #include "Object.h"
 #include "../Graphics/Window.h"
 
-namespace TMT {
+namespace TMT 
+{
 	class Camera : public Object
 	{
 	public:
@@ -11,6 +12,8 @@ namespace TMT {
 		~Camera();
 
 		glm::mat4 update() override;
+
+		
 
 	private:
 		glm::mat4 m_projection;

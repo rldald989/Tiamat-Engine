@@ -48,6 +48,8 @@ namespace TMT {
 
 		void export_scene();
 
+		void init_scene();
+
 		void add_mesh_renderer(Mesh mesh_type, std::string material, int index);
 		void add_mesh_renderer(Mesh mesh_type, std::string material);
 
@@ -58,15 +60,17 @@ namespace TMT {
 		void add_material(std::string name, std::string shader, std::string texture, Vector3 color);
 		void add_material(std::string name, Material* material);
 
-		void add_object(Object* object);
-		void add_object(std::string name, std::string matrix_name, const tmt_transform& transform);
+		void append_material(const char* material_name, const char* object_name);
+
+		void add_object(Object* object, const char* linked_material);
+		void add_object(Object* object, const bool& shader_all);
+		void add_object(std::string name, std::string matrix_name, const tmt_transform& transform, const char* linked_material);
 
 		Shader* get_shader(std::string shader_name);
 		Texture* get_texture(std::string texture_name);
 		Material* get_material(std::string material_name);
 		Object* get_object(std::string object_name);
 
-		void update();
 		void render();
 
 	private:

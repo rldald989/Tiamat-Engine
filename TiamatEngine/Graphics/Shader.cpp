@@ -46,9 +46,7 @@ unsigned int TMT::Shader::get_program()
 void TMT::Shader::set_integer(const char* name, int value)
 {
 	use();
-
 	glUniform1i(glGetUniformLocation(value, name), value);
-
 	unuse();
 }
 
@@ -56,9 +54,7 @@ void TMT::Shader::set_integer(const char* name, int value)
 void TMT::Shader::set_float(const char* name, float value)
 {
 	use();
-
 	glUniform1f(glGetUniformLocation(m_ID, name), value);
-
 	unuse();
 }
 
@@ -66,9 +62,7 @@ void TMT::Shader::set_float(const char* name, float value)
 void TMT::Shader::set_vector2(const char* name, glm::fvec2 value)
 {
 	use();
-
 	glUniform2fv(glGetUniformLocation(m_ID, name), 1, glm::value_ptr(value));
-
 	unuse();
 }
 
@@ -76,9 +70,7 @@ void TMT::Shader::set_vector2(const char* name, glm::fvec2 value)
 void TMT::Shader::set_vector3(const char* name, glm::fvec3 value)
 {
 	use();
-
 	glUniform3fv(glGetUniformLocation(m_ID, name), 1, glm::value_ptr(value));
-
 	unuse();
 }
 
@@ -86,9 +78,7 @@ void TMT::Shader::set_vector3(const char* name, glm::fvec3 value)
 void TMT::Shader::set_vector4(const char* name, glm::fvec4 value)
 {
 	use();
-
 	glUniform4fv(glGetUniformLocation(m_ID, name), 1, glm::value_ptr(value));
-
 	unuse();
 }
 
@@ -96,9 +86,7 @@ void TMT::Shader::set_vector4(const char* name, glm::fvec4 value)
 void TMT::Shader::set_matrix3(const char* name, glm::mat3 value, bool transpose)
 {
 	use();
-
 	glUniformMatrix3fv(glGetUniformLocation(m_ID, name), 1, transpose, glm::value_ptr(value));
-
 	unuse();
 }
 
@@ -106,8 +94,6 @@ void TMT::Shader::set_matrix3(const char* name, glm::mat3 value, bool transpose)
 void TMT::Shader::set_matrix4(const char* name, glm::mat4 value, bool transpose)
 {
 	use();
-
 	glUniformMatrix4fv(glGetUniformLocation(m_ID, name), 1, transpose, glm::value_ptr(value));
-
 	unuse();
 }

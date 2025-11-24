@@ -9,7 +9,7 @@ uniform sampler2D ourTexture;
 uniform float fade_time;
 
 void main() {
-   vec4 tex = texture(ourTexture, vec2(TexCoord.x, TexCoord.y));
+   vec4 tex = texture(ourTexture, TexCoord);
 
    float bars;
 

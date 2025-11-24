@@ -1,4 +1,7 @@
-[S] ("Tiamat Basic Shader" "Shaders/vertex_basic.glsl" "Shaders/fragment_basic_fade.glsl")
+[S] ("Tiamat Basic Shader" "Shaders/vertex_basic.glsl" "Shaders/fragment_basic.glsl")
+[T] ("MGS" "Images/MGS_SolidSnake.png")
 [T] ("Test Texture" "noise.ppm")
+[M] ("MGS Material" "Tiamat Basic Shader" "MGS")
 [M] ("Test Material" "Tiamat Basic Shader" "Test Texture")
 [MR] ("1" "Test Material")
+[MR] ("2" "MGS Material")

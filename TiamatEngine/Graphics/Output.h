@@ -50,6 +50,8 @@ public:
     Image operator*(Image& other);
     Image operator/(Image& other);
 
+    Image operator=(const Image& other);
+
     Vector2 GetResolution();
 
     std::unordered_map<Vector2, Vector3> GetImageData();

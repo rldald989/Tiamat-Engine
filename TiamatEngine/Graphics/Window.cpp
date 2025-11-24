@@ -70,3 +70,9 @@ void TMT::Window::poll_events()
 {
 	glfwPollEvents();
 }
+
+void TMT::Window::update_framebuffer()
+{
+	glfwGetFramebufferSize(get_window(), &get_width(), &get_height());
+	framebuffer_size_callback(get_window(), get_size().m_x, get_size().m_y);
+}

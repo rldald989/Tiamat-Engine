@@ -26,5 +26,7 @@ namespace TMT {
 		Shader* m_shader;
 		Texture* m_texture;
 		Vector3 m_color;
+
+		std::vector<std::string*> m_object_names;
 	};
 }

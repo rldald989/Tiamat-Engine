@@ -14,9 +14,11 @@ glm::mat4 TMT::Camera::update()
 {
 	float aspect_ratio = m_window.get_aspect_ratio();
 	m_projection = glm::ortho(-aspect_ratio, aspect_ratio, -1.f, 1.f, -1.f, 1.f);
-
+	 
 	transform.position = glm::vec2(m_model_transform[3][0], m_model_transform[3][1]);
 	transform.scale = glm::vec2(m_model_transform[0][0], m_model_transform[1][1]);
 
 	return m_projection * m_model_transform;
 }
+
+
