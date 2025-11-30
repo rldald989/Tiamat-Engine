@@ -39,7 +39,7 @@ namespace TMT {
 		void local_scale(float x, float y);
 		void local_rotate(float degrees);
 
-		void parent(Object& to_child);
+		void parent(Object* to_child);
 
 		glm::mat4& get_transform();
 

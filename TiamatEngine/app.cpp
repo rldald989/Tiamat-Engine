@@ -23,6 +23,10 @@
 // Define delta time otherwise code within classes using delta_time will not work properly or at all
 float TMT::delta_time = 0.0f;
 
+float _clampf(float value, float _min, float _max) {
+    return fmin(fmax(value, _min), _max);
+}
+
 int main() {
     // Setup
     glfwInit();
@@ -41,18 +45,33 @@ int main() {
     // An image, you can write to it or load your own ppm image using the Load function
     Image test_image("noise.ppm", Vector2(128, 128));
     test_image.Init();
-
     //This generates an image that is black and white noise using the WritePixel function
+
+    Vector3 last_value(0, 0, 0);
+
     for (int i = 0; i < test_image.Size(); i++) 
     {
-        test_image.WritePixel(rand_bw());
+        Vector3 cur_value = rand_bw();
+        if (i > 0) {
+            if (last_value.x > 1.f / 2.f) {
+                float val = _clampf(last_value.x - cur_value.x, 0, 1);
+                Vector3 result = Vector3(val, val, val);
+                test_image.WritePixel(result);
+            }
+            else {
+                float val = _clampf(last_value.x + cur_value.x / 2, 0, 1);
+                Vector3 result = Vector3(val, val, val);
+                test_image.WritePixel(result);
+            }
+        }
+        last_value = cur_value;
     }
 
     Image test_image_blurred = BoxBlur(test_image, test_image.GetResolution());
     test_image_blurred.Init();
 
     // This will export our image in the ppm format
-    test_image_blurred.Export();
+    test_image.Export();
 
     // Our scene, holds all scene data, the first parameter is the name, and the second parameter is the directory the scene gets saved to
     TMT::Scene scene_test("Scene A", "Scenes");
@@ -63,9 +82,11 @@ int main() {
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
     TMT::Texture* test_texture = new TMT::Texture();
     TMT::Texture* mgs_texture = new TMT::Texture();
+    TMT::Texture* pill_texture = new TMT::Texture();
     // Here we load the "test_image" image
-    test_texture->load_ppm(test_image_blurred);
+    test_texture->load_ppm(test_image);
     mgs_texture->load_stbi("Images/MGS_SolidSnake.png");
+    pill_texture->load_stbi("Images/Pill.png");
 
     Vector3 test_color(1, 1, 1);
 
@@ -74,35 +95,39 @@ int main() {
     TMT::Object* test_object = new TMT::Object("Test Object", "model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
     TMT::Object* child_object = new TMT::Object("Child Object", "model_transform", TMT::tmt_transform(glm::vec2(0, 0), glm::vec2(1, 1), 0));
     TMT::Object* three_object = new TMT::Object("Three Object", "model_transform", TMT::tmt_transform(glm::vec2(0, 0), glm::vec2(1, 1), 0));
-    test_object->parent(*child_object);
+
+    test_object->parent(child_object);
+    child_object->parent(three_object);
+
+    three_object->local_scale(1, 1);
+    three_object->local_move(0.f, 0.5f);
 
     child_object->local_scale(0.5f, 0.5f);
     child_object->local_move(1.f, 0.f);
     child_object->local_rotate(45);
 
-    child_object->parent(*three_object);
-    three_object->local_scale(.5f, .5f);
-    three_object->local_move(0.1f, 0.1f);
-    three_object->local_rotate(45);
 
     TMT::Camera* test_camera = new TMT::Camera("Test Camera", tmt_window, TMT::tmt_transform(glm::vec2(0.f, 0.f), glm::vec2(1, 1), 0));
-
 
     scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
     scene_test.add_texture("Test Texture", test_texture);
     scene_test.add_texture("MGS", mgs_texture);
+    scene_test.add_texture("Pill", pill_texture);
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
     scene_test.add_material("MGS Material", "Tiamat Basic Shader", "MGS", test_color);
+    scene_test.add_material("Pill Material", "Tiamat Basic Shader", "Pill", test_color);
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
     scene_test.add_mesh_renderer(TMT::Quad(), "MGS Material");
+    scene_test.add_mesh_renderer(TMT::Quad(), "Pill Material");
     scene_test.add_object(test_camera, true);
     scene_test.add_object(test_object, "MGS Material");
     scene_test.add_object(child_object, "Test Material");
-    scene_test.add_object(three_object, "MGS Material");
-
+    scene_test.add_object(three_object, "Pill Material");
     // Loads the scene 
     //scene_test.load_scene();
+
+    
 
     TMT::Timer fall_timer(5);
 

@@ -306,31 +306,29 @@ TMT::Object* TMT::Scene::get_object(std::string object_name)
 
 void TMT::Scene::render() 
 {
-	
 	for (auto& mr : m_mesh_renderers) 
 	{
 		Shader& shader = *mr.second->m_material->m_shader;
 		for (auto& on : mr.second->m_material->m_object_names)
 		{
-			for (auto& o : m_objects) {
-				std::optional<std::string> parent = o.second->m_parent;
-				if (o.second->m_name == *on)
+			if (m_objects.find(*on) != m_objects.end())
+			{
+				Object& o = *m_objects[*on];
+				std::optional<std::string> parent = o.m_parent;
+				
+				if (parent.has_value() && m_objects.find(parent.value()) != m_objects.end() && o.matrix_name != "camera_transform")
 				{
-					if (parent.has_value() && m_objects.find(parent.value()) != m_objects.end())
-						shader.set_matrix4(o.second->matrix_name.c_str(), m_objects[parent.value()]->m_final_transform * o.second->update());
-					else
-						shader.set_matrix4(o.second->matrix_name.c_str(), o.second->update());
-
-					if (o.second->matrix_name != "camera_transform")
-						mr.second->render();
+					o.m_final_transform = m_objects[parent.value()]->m_final_transform * o.update();
+					shader.set_matrix4(o.matrix_name.c_str(), o.m_final_transform);
 				}
+				else
+					shader.set_matrix4(o.matrix_name.c_str(), o.update());
 
+				if (o.matrix_name != "camera_transform")
+					mr.second->render();
 			}
 		}
 	}
-
-
-	
 }
 
 void TMT::Scene::link_shader_data(file_viewer<std::string> scv, std::vector<std::string> seperated_data, std::string data, int count)
