@@ -14,9 +14,11 @@
 #include "Graphics/Material.h"
 #include "Graphics/MeshRenderer.h"
 
-#include "Engine Components/Scene.h"
-#include "Engine Components/Timer.h"
-#include "Engine Components/Camera.h"
+#include "Core/Scene.h"
+#include "Core/Timer.h"
+#include "Core/Camera.h"
+#include "Core/Module.h"
+
 
 #include "stb_image.h"
 
@@ -45,30 +47,13 @@ int main() {
     // An image, you can write to it or load your own ppm image using the Load function
     Image test_image("noise.ppm", Vector2(128, 128));
     test_image.Init();
-    //This generates an image that is black and white noise using the WritePixel function
 
-    Vector3 last_value(0, 0, 0);
+    //This generates a color noise image
 
     for (int i = 0; i < test_image.Size(); i++) 
     {
-        Vector3 cur_value = rand_bw();
-        if (i > 0) {
-            if (last_value.x > 1.f / 2.f) {
-                float val = _clampf(last_value.x - cur_value.x, 0, 1);
-                Vector3 result = Vector3(val, val, val);
-                test_image.WritePixel(result);
-            }
-            else {
-                float val = _clampf(last_value.x + cur_value.x / 2, 0, 1);
-                Vector3 result = Vector3(val, val, val);
-                test_image.WritePixel(result);
-            }
-        }
-        last_value = cur_value;
+        test_image.WritePixel(Vector3::rand());
     }
-
-    Image test_image_blurred = BoxBlur(test_image, test_image.GetResolution());
-    test_image_blurred.Init();
 
     // This will export our image in the ppm format
     test_image.Export();
@@ -93,41 +78,20 @@ int main() {
     float logo_fall = .2f;
 
     TMT::Object* test_object = new TMT::Object("Test Object", "model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
-    TMT::Object* child_object = new TMT::Object("Child Object", "model_transform", TMT::tmt_transform(glm::vec2(0, 0), glm::vec2(1, 1), 0));
-    TMT::Object* three_object = new TMT::Object("Three Object", "model_transform", TMT::tmt_transform(glm::vec2(0, 0), glm::vec2(1, 1), 0));
-
-    test_object->parent(child_object);
-    child_object->parent(three_object);
-
-    three_object->local_scale(1, 1);
-    three_object->local_move(0.f, 0.5f);
-
-    child_object->local_scale(0.5f, 0.5f);
-    child_object->local_move(1.f, 0.f);
-    child_object->local_rotate(45);
-
 
     TMT::Camera* test_camera = new TMT::Camera("Test Camera", tmt_window, TMT::tmt_transform(glm::vec2(0.f, 0.f), glm::vec2(1, 1), 0));
 
     scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
     scene_test.add_texture("Test Texture", test_texture);
-    scene_test.add_texture("MGS", mgs_texture);
-    scene_test.add_texture("Pill", pill_texture);
     scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
-    scene_test.add_material("MGS Material", "Tiamat Basic Shader", "MGS", test_color);
-    scene_test.add_material("Pill Material", "Tiamat Basic Shader", "Pill", test_color);
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
-    scene_test.add_mesh_renderer(TMT::Quad(), "MGS Material");
-    scene_test.add_mesh_renderer(TMT::Quad(), "Pill Material");
-    scene_test.add_object(test_camera, true);
-    scene_test.add_object(test_object, "MGS Material");
-    scene_test.add_object(child_object, "Test Material");
-    scene_test.add_object(three_object, "Pill Material");
+    scene_test.add_object(test_camera, {}, true);
+    scene_test.add_object(test_object, "Test Material");
     // Loads the scene 
     //scene_test.load_scene();
 
-    
+    TMT::TMT_Module test_module(tmt_window, scene_test);
 
     TMT::Timer fall_timer(5);
 
@@ -157,12 +121,7 @@ int main() {
             t_obj.move(1 * TMT::delta_time, 0);
         }
 
-        if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_Q) == GLFW_PRESS) {
-            t_obj.local_rotate(100 * TMT::delta_time);
-        }
-        else if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_E) == GLFW_PRESS) {
-            t_obj.local_rotate(-100 * TMT::delta_time);
-        }
+        test_module.update();
 
         if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_P) == GLFW_PRESS) {
             std::cout << "Window size: " << tmt_window.get_size().m_x << ", " << tmt_window.get_size().m_y << std::endl;
@@ -175,9 +134,6 @@ int main() {
         tmt_window.swap_buffers();
         tmt_window.poll_events();
     }
-
-    // To insure that this is the texture that gets saved
-    scene_test.get_texture("Test Texture")->load_ppm(test_image);
 
     scene_test.export_scene();
 

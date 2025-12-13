@@ -31,10 +31,10 @@
     <Filter Include="Source Files\Data">
       <UniqueIdentifier>{6792c5d5-ae60-4e87-a259-0cedb830d711}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine Components">
+    <Filter Include="Header Files\Core">
       <UniqueIdentifier>{a5775d64-0cfd-4cbc-b856-075208efa25b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine Components">
+    <Filter Include="Source Files\Core">
       <UniqueIdentifier>{82adb3c7-da8f-46c8-9d87-573ed0a9e8e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -75,12 +75,6 @@
     <ClCompile Include="Graphics\Window.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine Components\Camera.cpp">
-      <Filter>Source Files\Engine Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine Components\Object.cpp">
-      <Filter>Source Files\Engine Components</Filter>
-    </ClCompile>
     <ClCompile Include="Data\Parser.cpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
@@ -90,11 +84,20 @@
     <ClCompile Include="Graphics\Output.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine Components\Scene.cpp">
-      <Filter>Source Files\Engine Components</Filter>
+    <ClCompile Include="Core\Timer.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Engine Components\Timer.cpp">
-      <Filter>Source Files\Engine Components</Filter>
+    <ClCompile Include="Core\Scene.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Object.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Camera.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Module.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,20 +152,23 @@
     <ClInclude Include="Data\Parser.h">
       <Filter>Header Files\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Engine Components\Timer.h">
-      <Filter>Header Files\Engine Components</Filter>
+    <ClInclude Include="Core\Timer.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine Components\Time.h">
-      <Filter>Header Files\Engine Components</Filter>
+    <ClInclude Include="Core\Time.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine Components\Scene.h">
-      <Filter>Header Files\Engine Components</Filter>
+    <ClInclude Include="Core\Object.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine Components\Object.h">
-      <Filter>Header Files\Engine Components</Filter>
+    <ClInclude Include="Core\Scene.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Engine Components\Camera.h">
-      <Filter>Header Files\Engine Components</Filter>
+    <ClInclude Include="Core\Camera.h">
+      <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Module.h">
+      <Filter>Header Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

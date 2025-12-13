@@ -48,12 +48,19 @@ void TMT::Object::local_rotate(float degrees)
 	m_local_transform = glm::rotate(m_local_transform, glm::radians(degrees) / 2, glm::vec3(0, 0, 1));
 }
 
+void TMT::Object::add_tag(std::string tag)
+{
+	m_tags[tag] = tag;
+}
+
+bool TMT::Object::has_tag(std::string tag)
+{
+	return m_tags.find(tag.c_str()) != m_tags.end();
+}
+
 void TMT::Object::parent(Object* to_child)
 {
 	to_child->m_parent = this->m_name;
-	//if (to_child->m_parent.has_value()) {
-	//	std::cout << m_name << ", parent of " << to_child->m_name << std::endl;
-	//}
 }
 
 
@@ -74,4 +81,3 @@ glm::mat4 TMT::Object::update()
 
 	return m_final_transform;
 }
-

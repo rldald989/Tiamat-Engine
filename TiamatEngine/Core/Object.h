@@ -7,7 +7,7 @@
 namespace TMT {
 
 	// transform: position, scale, rotation
-	struct tmt_transform 
+	struct tmt_transform
 	{
 		glm::vec2 position = glm::vec2(0);
 		glm::vec2 scale = glm::vec2(1);
@@ -16,7 +16,7 @@ namespace TMT {
 		tmt_transform(glm::vec2 pos, glm::vec2 scl, float rot) : position(pos), scale(scl), rotation(rot) {}
 	};
 
-	
+
 
 	class Object
 	{
@@ -39,6 +39,9 @@ namespace TMT {
 		void local_scale(float x, float y);
 		void local_rotate(float degrees);
 
+		void add_tag(std::string tag);
+		bool has_tag(std::string tag);
+
 		void parent(Object* to_child);
 
 		glm::mat4& get_transform();
@@ -52,7 +55,9 @@ namespace TMT {
 		glm::mat4 m_final_transform;
 
 		std::string m_name;
+		std::unordered_map<std::string, std::string> m_tags;
 
 		std::optional<std::string> m_parent;
 	};
+
 }

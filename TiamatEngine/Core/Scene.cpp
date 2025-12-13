@@ -5,6 +5,22 @@ m_file_dir((std::string)m_directory + "/" + (std::string)m_scene_name + ".tmt_sc
 {
 }
 
+TMT::Scene::Scene(const Scene& copy) : m_scene_name(copy.m_scene_name), m_directory(copy.m_directory),
+m_file_dir(copy.m_file_dir), found_extension(copy.found_extension), m_position(copy.m_position)
+{
+	m_mesh_renderers = copy.m_mesh_renderers;
+	m_textures = copy.m_textures;
+	m_materials = copy.m_materials;
+	m_shaders = copy.m_shaders;
+	m_objects = copy.m_objects;
+
+	m_shader_module = copy.m_shader_module;
+	m_texture_module = copy.m_texture_module;
+	m_material_module = copy.m_material_module;
+	m_mesh_renderer_module = copy.m_mesh_renderer_module;
+}
+
+
 TMT::Scene::~Scene()
 {
 	for (auto& m : m_mesh_renderers) {
@@ -78,6 +94,7 @@ void TMT::Scene::load_scene()
 				Image temp_image = Image();
 				temp_image.Load(m_texture_module.file_path.c_str());
 				temp_tex->load_ppm(temp_image);
+				std::cout << temp_tex->m_local_file_path << std::endl;
 			}
 			else
 			{
@@ -268,12 +285,30 @@ void TMT::Scene::add_object(Object* object, const char* linked_material)
 	}
 }
 
-void TMT::Scene::add_object(Object* object, const bool& shader_all)
+
+/*
+	NOTE: if you don't give it a material name, it will update for all materials
+*/
+
+void TMT::Scene::add_object(Object* object, std::optional<std::string> linked_material, const bool& no_render)
 {
-	m_objects[object->m_name] = object;
-	for (auto& m : m_materials) {
-		m.second->m_object_names.push_back(new std::string(object->m_name));
+	if (no_render) 
+	{
+		object->add_tag("[no_render]");
 	}
+	m_objects[object->m_name] = object;
+	if (linked_material.has_value())
+	{
+		if (m_materials.find(linked_material.value()) != m_materials.end()) {
+			m_materials[linked_material.value()]->m_object_names.push_back(new std::string(object->m_name));
+		}
+	}
+	else {
+		for (auto& m : m_materials) {
+			m.second->m_object_names.push_back(new std::string(object->m_name));
+		}
+	}
+	
 }
 
 void TMT::Scene::add_object(std::string name, std::string matrix_name, const tmt_transform& transform, const char* linked_material)
@@ -286,22 +321,46 @@ void TMT::Scene::add_object(std::string name, std::string matrix_name, const tmt
 
 TMT::Shader* TMT::Scene::get_shader(std::string shader_name)
 {
-	return m_shaders[shader_name];
+	if (m_shaders.find(shader_name) != m_shaders.end())
+		return m_shaders[shader_name];
+	else
+	{
+		std::cout << "ERROR: Shader \"" << shader_name << "\" not found!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 TMT::Texture* TMT::Scene::get_texture(std::string texture_name)
 {
-	return m_textures[texture_name];
+	if (m_textures.find(texture_name) != m_textures.end())
+		return m_textures[texture_name];
+	else
+	{
+		std::cout << "ERROR: Texture \"" << texture_name << "\" not found!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 TMT::Material* TMT::Scene::get_material(std::string material_name)
 {
-	return m_materials[material_name];
+	if (m_materials.find(material_name) != m_materials.end())
+		return m_materials[material_name];
+	else
+	{
+		std::cout << "ERROR: Material \"" << material_name << "\" not found!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 TMT::Object* TMT::Scene::get_object(std::string object_name)
 {
-	return m_objects[object_name];
+	if (m_objects.find(object_name) != m_objects.end())
+		return m_objects[object_name];
+	else
+	{
+		std::cout << "ERROR: Object \"" << object_name << "\" not found!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 void TMT::Scene::render() 
@@ -324,7 +383,7 @@ void TMT::Scene::render()
 				else
 					shader.set_matrix4(o.matrix_name.c_str(), o.update());
 
-				if (o.matrix_name != "camera_transform")
+				if (!o.has_tag("[no_render]"))
 					mr.second->render();
 			}
 		}

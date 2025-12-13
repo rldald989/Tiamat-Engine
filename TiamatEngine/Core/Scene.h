@@ -42,6 +42,7 @@ namespace TMT {
 	{
 	public:
 		Scene(tmt_char scene_name, tmt_char directory);
+		Scene(const Scene& copy);
 		~Scene();
 
 		void load_scene();
@@ -63,7 +64,7 @@ namespace TMT {
 		void append_material(const char* material_name, const char* object_name);
 
 		void add_object(Object* object, const char* linked_material);
-		void add_object(Object* object, const bool& shader_all);
+		void add_object(Object* object, std::optional<std::string> linked_material, const bool& no_render);
 		void add_object(std::string name, std::string matrix_name, const tmt_transform& transform, const char* linked_material);
 
 		Shader* get_shader(std::string shader_name);

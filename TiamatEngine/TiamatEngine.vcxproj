@@ -136,12 +136,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="Core\Camera.cpp" />
+    <ClCompile Include="Core\Object.cpp" />
+    <ClCompile Include="Core\Scene.cpp" />
+    <ClCompile Include="Core\Timer.cpp" />
     <ClCompile Include="Data\Parser.cpp" />
     <ClCompile Include="Data\Tokenizer.cpp" />
-    <ClCompile Include="Engine Components\Camera.cpp" />
-    <ClCompile Include="Engine Components\Object.cpp" />
-    <ClCompile Include="Engine Components\Scene.cpp" />
-    <ClCompile Include="Engine Components\Timer.cpp" />
     <ClCompile Include="Graphics\Buffers.cpp" />
     <ClCompile Include="Graphics\Material.cpp" />
     <ClCompile Include="Graphics\Mesh.cpp" />
@@ -152,18 +152,19 @@
     <ClCompile Include="Graphics\Window.cpp" />
     <ClCompile Include="Matrix\Matrix2.cpp" />
     <ClCompile Include="Matrix\Matrix3.cpp" />
+    <ClCompile Include="Core\Module.cpp" />
     <ClCompile Include="Vector\Vector2.cpp" />
     <ClCompile Include="Vector\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Camera.h" />
+    <ClInclude Include="Core\Object.h" />
+    <ClInclude Include="Core\Scene.h" />
+    <ClInclude Include="Core\Time.h" />
+    <ClInclude Include="Core\Timer.h" />
     <ClInclude Include="Data\Parser.h" />
     <ClInclude Include="Data\Tokenizer.h" />
     <ClInclude Include="Data\Types.h" />
-    <ClInclude Include="Engine Components\Camera.h" />
-    <ClInclude Include="Engine Components\Object.h" />
-    <ClInclude Include="Engine Components\Scene.h" />
-    <ClInclude Include="Engine Components\Time.h" />
-    <ClInclude Include="Engine Components\Timer.h" />
     <ClInclude Include="Graphics\Buffers.h" />
     <ClInclude Include="Graphics\Filters.h" />
     <ClInclude Include="Graphics\Material.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Graphics\Window.h" />
     <ClInclude Include="Matrix\Matrix2.h" />
     <ClInclude Include="Matrix\Matrix3.h" />
+    <ClInclude Include="Core\Module.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Vector\Vector2.h" />
     <ClInclude Include="Vector\Vector3.h" />
