@@ -37,6 +37,12 @@
     <Filter Include="Source Files\Core">
       <UniqueIdentifier>{82adb3c7-da8f-46c8-9d87-573ed0a9e8e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Core\Modules">
+      <UniqueIdentifier>{5531c685-e963-4a66-9d83-412ee61db0ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Modules">
+      <UniqueIdentifier>{0f7538a5-b184-4400-a752-ca6cf48c38e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp">
@@ -98,6 +104,15 @@
     </ClCompile>
     <ClCompile Include="Core\Module.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Modules\CharacterController.cpp">
+      <Filter>Source Files\Core\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Modules\SpriteAnimator.cpp">
+      <Filter>Source Files\Core\Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\MaterialManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +184,15 @@
     </ClInclude>
     <ClInclude Include="Core\Module.h">
       <Filter>Header Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Modules\CharacterController.h">
+      <Filter>Header Files\Core\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Modules\SpriteAnimator.h">
+      <Filter>Header Files\Core\Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\MaterialManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

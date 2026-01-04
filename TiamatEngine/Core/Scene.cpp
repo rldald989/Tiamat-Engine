@@ -93,12 +93,12 @@ void TMT::Scene::load_scene()
 			{
 				Image temp_image = Image();
 				temp_image.Load(m_texture_module.file_path.c_str());
-				temp_tex->load_ppm(temp_image);
+				temp_tex->load_ppm(temp_image, texture_filter::TMT_LINEAR);
 				std::cout << temp_tex->m_local_file_path << std::endl;
 			}
 			else
 			{
-				temp_tex->load_stbi(m_texture_module.file_path.c_str());
+				temp_tex->load_stbi(m_texture_module.file_path.c_str(), texture_filter::TMT_LINEAR);
 			}
 
 			add_texture(m_texture_module.name, temp_tex);
@@ -348,6 +348,23 @@ TMT::Material* TMT::Scene::get_material(std::string material_name)
 	else
 	{
 		std::cout << "ERROR: Material \"" << material_name << "\" not found!" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+}
+
+TMT::Material* TMT::Scene::get_linked_material(std::string object_name)
+{
+	bool found = false;
+	for (auto& m : m_materials) {
+		for (auto& o : m.second->m_object_names) {
+			if (*o == object_name) {
+				return m.second;
+				found = true;
+			}
+		}
+	}
+	if (!found) {
+		std::cout << "ERROR: Material not found at function \"get_linked_material\"" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 }

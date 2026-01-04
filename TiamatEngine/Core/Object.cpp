@@ -48,6 +48,18 @@ void TMT::Object::local_rotate(float degrees)
 	m_local_transform = glm::rotate(m_local_transform, glm::radians(degrees) / 2, glm::vec3(0, 0, 1));
 }
 
+void TMT::Object::set_position(float x, float y)
+{
+	m_model_transform[3][0] = x;
+	m_model_transform[3][1] = y;
+}
+
+void TMT::Object::set_scale(float x, float y)
+{
+	m_model_transform[0][0] = x;
+	m_model_transform[1][1] = y;
+}
+
 void TMT::Object::add_tag(std::string tag)
 {
 	m_tags[tag] = tag;

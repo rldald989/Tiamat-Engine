@@ -21,6 +21,7 @@ namespace TMT {
 		Texture* get_texture();
 
 		friend class Scene;
+		friend class MaterialManager;
 
 	protected:
 		Shader* m_shader;

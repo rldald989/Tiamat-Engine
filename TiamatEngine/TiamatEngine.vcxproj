@@ -137,9 +137,11 @@
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="Core\Camera.cpp" />
+    <ClCompile Include="Core\Modules\SpriteAnimator.cpp" />
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="Core\Scene.cpp" />
     <ClCompile Include="Core\Timer.cpp" />
+    <ClCompile Include="Data\MaterialManager.cpp" />
     <ClCompile Include="Data\Parser.cpp" />
     <ClCompile Include="Data\Tokenizer.cpp" />
     <ClCompile Include="Graphics\Buffers.cpp" />
@@ -153,15 +155,18 @@
     <ClCompile Include="Matrix\Matrix2.cpp" />
     <ClCompile Include="Matrix\Matrix3.cpp" />
     <ClCompile Include="Core\Module.cpp" />
+    <ClCompile Include="Core\Modules\CharacterController.cpp" />
     <ClCompile Include="Vector\Vector2.cpp" />
     <ClCompile Include="Vector\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Camera.h" />
+    <ClInclude Include="Core\Modules\SpriteAnimator.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="Core\Scene.h" />
     <ClInclude Include="Core\Time.h" />
     <ClInclude Include="Core\Timer.h" />
+    <ClInclude Include="Data\MaterialManager.h" />
     <ClInclude Include="Data\Parser.h" />
     <ClInclude Include="Data\Tokenizer.h" />
     <ClInclude Include="Data\Types.h" />
@@ -177,6 +182,7 @@
     <ClInclude Include="Matrix\Matrix2.h" />
     <ClInclude Include="Matrix\Matrix3.h" />
     <ClInclude Include="Core\Module.h" />
+    <ClInclude Include="Core\Modules\CharacterController.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Vector\Vector2.h" />
     <ClInclude Include="Vector\Vector3.h" />

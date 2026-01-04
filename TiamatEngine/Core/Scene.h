@@ -70,6 +70,7 @@ namespace TMT {
 		Shader* get_shader(std::string shader_name);
 		Texture* get_texture(std::string texture_name);
 		Material* get_material(std::string material_name);
+		Material* get_linked_material(std::string object_name);
 		Object* get_object(std::string object_name);
 
 		void render();

@@ -19,6 +19,9 @@
 #include "Core/Camera.h"
 #include "Core/Module.h"
 
+#include "Core/Modules/CharacterController.h"
+#include "Core/Modules/SpriteAnimator.h"
+
 
 #include "stb_image.h"
 
@@ -34,7 +37,7 @@ int main() {
     glfwInit();
 
     // The window, with size, title, and color
-    TMT::Window tmt_window(800, 800, "[Tiamat Engine]", Vector3(0, 0, 0));
+    TMT::Window tmt_window(800, 800, "[Tiamat Engine]", Vector3::to_xyz(Vector3(135, 206, 235)));
 
     glewInit();
 
@@ -44,56 +47,95 @@ int main() {
     // Flips stbi images on load
     stbi_set_flip_vertically_on_load(true);
 
-    // An image, you can write to it or load your own ppm image using the Load function
-    Image test_image("noise.ppm", Vector2(128, 128));
-    test_image.Init();
-
-    //This generates a color noise image
-
-    for (int i = 0; i < test_image.Size(); i++) 
-    {
-        test_image.WritePixel(Vector3::rand());
-    }
-
-    // This will export our image in the ppm format
-    test_image.Export();
-
     // Our scene, holds all scene data, the first parameter is the name, and the second parameter is the directory the scene gets saved to
     TMT::Scene scene_test("Scene A", "Scenes");
 
     // Our shader, this allows us to change the pixels on the screen how we'd like
-    TMT::Shader* tmt_shader_basic = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/fragment_basic.glsl");
+    TMT::Shader* sprite_shader = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/tiling_frag.glsl");
+    TMT::Shader* background_shader = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/tiling_frag.glsl");
 
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
     TMT::Texture* test_texture = new TMT::Texture();
-    TMT::Texture* mgs_texture = new TMT::Texture();
-    TMT::Texture* pill_texture = new TMT::Texture();
     // Here we load the "test_image" image
-    test_texture->load_ppm(test_image);
-    mgs_texture->load_stbi("Images/MGS_SolidSnake.png");
-    pill_texture->load_stbi("Images/Pill.png");
+    test_texture->load_stbi("Images/Pixel_Knight_Sheet.png", TMT::texture_filter::TMT_NEAREST);
+
+    TMT::Texture* cotton_texture = new TMT::Texture();
+    cotton_texture->load_stbi("Images/Cotton.png", TMT::texture_filter::TMT_NEAREST);
+
+    TMT::Texture* dirt_texture = new TMT::Texture();
+    dirt_texture->load_stbi("Images/Dirt.png", TMT::texture_filter::TMT_NEAREST);
+
+    TMT::Texture* border_texture = new TMT::Texture();
+    border_texture->load_stbi("Images/Border.png", TMT::texture_filter::TMT_NEAREST);
 
     Vector3 test_color(1, 1, 1);
 
     float logo_fall = .2f;
 
-    TMT::Object* test_object = new TMT::Object("Test Object", "model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
+    TMT::Camera* camera = new TMT::Camera("Camera", tmt_window, TMT::tmt_transform(glm::vec2(0.f, 0.f), glm::vec2(1, 1), 0));
 
-    TMT::Camera* test_camera = new TMT::Camera("Test Camera", tmt_window, TMT::tmt_transform(glm::vec2(0.f, 0.f), glm::vec2(1, 1), 0));
+    TMT::Object* player_object = new TMT::Object("Player", "model_transform", TMT::tmt_transform(glm::vec2(0, logo_fall), glm::vec2(1, 1), 0));
 
-    scene_test.add_shader("Tiamat Basic Shader", tmt_shader_basic);
-    scene_test.add_texture("Test Texture", test_texture);
-    scene_test.add_material("Test Material", "Tiamat Basic Shader", "Test Texture", test_color);
+    TMT::Object* cotton = new TMT::Object("Cotton", "model_transform", TMT::tmt_transform(glm::vec2(0), glm::vec2(1, 1), 0));
 
-    scene_test.add_mesh_renderer(TMT::Quad(), "Test Material");
-    scene_test.add_object(test_camera, {}, true);
-    scene_test.add_object(test_object, "Test Material");
+    TMT::Object* dirt = new TMT::Object("Dirt", "model_transform", TMT::tmt_transform(glm::vec2(0), glm::vec2(1, 1), 0));
+
+    TMT::Object* border = new TMT::Object("Border", "model_transform", TMT::tmt_transform(glm::vec2(0), glm::vec2(1, 1), 0));
+
+    scene_test.add_shader("Sprite Shader", sprite_shader);
+    scene_test.add_shader("BG Shader", background_shader);
+
+    scene_test.add_texture("Player", test_texture);
+    scene_test.add_material("Player", "Sprite Shader", "Player", test_color);
+
+    scene_test.add_texture("Cotton", cotton_texture);
+    scene_test.add_material("Cotton", "BG Shader", "Cotton", test_color);
+
+    scene_test.add_texture("Dirt", dirt_texture);
+    scene_test.add_material("Dirt", "BG Shader", "Dirt", Vector3(0.647, 0.165, 0.165));
+
+    scene_test.add_texture("Border", border_texture);
+    scene_test.add_material("Border", "Sprite Shader", "Border", test_color);
+
+    scene_test.add_mesh_renderer(TMT::Quad(), "Dirt");
+    scene_test.add_mesh_renderer(TMT::Quad(), "Cotton");
+    scene_test.add_mesh_renderer(TMT::Quad(), "Player");
+    scene_test.add_mesh_renderer(TMT::Quad(), "Border");
+    scene_test.add_object(camera, {}, true);
+    scene_test.add_object(dirt, "Dirt");
+    scene_test.add_object(cotton, "Cotton");
+    scene_test.add_object(player_object, "Player");
+    scene_test.add_object(border, "Border");
+    
     // Loads the scene 
-    //scene_test.load_scene();
+    scene_test.load_scene();
 
-    TMT::TMT_Module test_module(tmt_window, scene_test);
+    TMT::Game::CharacterController character_controller(tmt_window, scene_test, "Player", 1.0f);
+    TMT::Game::SpriteAnimator character_animator(tmt_window, scene_test, "Player", 7, 8, 10);
 
-    TMT::Timer fall_timer(5);
+    TMT::Object& t_obj = *scene_test.get_object("Player");
+    TMT::Object& t_cam = *scene_test.get_object("Camera");
+    TMT::Object& t_cotton = *scene_test.get_object("Cotton");
+    TMT::Object& t_dirt = *scene_test.get_object("Dirt");
+    TMT::Object& t_border = *scene_test.get_object("Border");
+    TMT::Shader& bg_shader = *scene_test.get_shader("BG Shader");
+    TMT::Shader& p_shader = *scene_test.get_shader("Sprite Shader");
+    float stage_length = 10;
+    t_cotton.parent(&t_dirt);
+    t_dirt.local_move(0.0f, -.6f);
+    t_cotton.scale(stage_length, 1);
+    bg_shader.set_vector2("tiling", glm::vec2(stage_length, 1));
+    t_border.scale(2.f, 2.f);
+
+
+    //for (int columns = 0; columns < 4; columns++) {
+    //    std::cout << "[" << columns << "] : ";
+    //    for (int rows = 0; rows < 4; rows++) {
+    //        float value = t_cotton.get_transform()[rows][columns];
+    //        std::cout << value << " ";
+    //    }
+    //    std::cout << "\n";
+    //}
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -103,25 +145,29 @@ int main() {
         tmt_window.update_framebuffer();
 
         TMT::update_delta_time();
-        
-        TMT::Object& t_obj = *scene_test.get_object("Test Object");
 
-        fall_timer.update();
+        character_controller.update();
+        character_animator.update();
 
-        if (!fall_timer.get_end_status())
-        {
-            t_obj.move(0, -logo_fall * TMT::delta_time);
+        t_border.set_position(t_obj.transform.position.x, 0.f);
+        t_border.set_scale(1.f/tmt_window.get_size().m_x, 2.f);
+
+        t_cam.set_position(-t_obj.transform.position.x, 0.0f);
+        bg_shader.set_vector2("texture_position", glm::vec2(t_cotton.transform.position.x, 0));
+        t_cotton.set_position(t_obj.transform.position.x, .5f);
+
+        if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_D) == GLFW_PRESS) {
+            character_animator.set_single(false);
+            character_animator.select_row(1);
         }
-
-        // Wanna move the mesh? Alright.
-        if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_A) == GLFW_PRESS) {
-            t_obj.move(-1 * TMT::delta_time, 0);
+        else if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_A) == GLFW_PRESS) {
+            character_animator.set_single(false);
+            character_animator.select_row(0);
         }
-        else if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_D) == GLFW_PRESS) {
-            t_obj.move(1 * TMT::delta_time, 0);
+        else  {
+            character_animator.set_single(true);
+            character_animator.select_row(6);
         }
-
-        test_module.update();
 
         if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_P) == GLFW_PRESS) {
             std::cout << "Window size: " << tmt_window.get_size().m_x << ", " << tmt_window.get_size().m_y << std::endl;

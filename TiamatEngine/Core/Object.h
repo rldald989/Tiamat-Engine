@@ -39,6 +39,9 @@ namespace TMT {
 		void local_scale(float x, float y);
 		void local_rotate(float degrees);
 
+		void set_position(float x, float y);
+		void set_scale(float x, float y);
+
 		void add_tag(std::string tag);
 		bool has_tag(std::string tag);
 
