@@ -10,10 +10,29 @@ namespace TMT::Game
 		RIGHT
 	};
 
+	class Collider : public TMT_Module
+	{
+	public:
+		Collider(const Window& window, Object& object, std::string collider_tag);
+		~Collider();
+
+		void conform_to_scale();
+
+		void update() override;
+
+		friend class CharacterController;
+
+	protected:
+		bool m_collided;
+		glm::vec2 m_bounds;
+		std::string m_collider_tag;
+		std::vector<Collider*> m_others;
+	};
+
 	class CharacterController : public TMT_Module
 	{
 	public:
-		CharacterController(const Window& window, Scene& scene, std::string character_object_name, float speed);
+		CharacterController(Collider& collider, float speed);
 		~CharacterController();
 
 		void update() override;

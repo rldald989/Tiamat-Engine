@@ -8,7 +8,7 @@ namespace TMT::Game
 	class SpriteAnimator : public TMT_Module
 	{
 	public:
-		SpriteAnimator(const Window& window, Scene& scene, std::string object_name, int columns, int rows, int framerate);
+		SpriteAnimator(const Window& window, Object& object, Material& linked_material, int columns, int rows, int framerate);
 		~SpriteAnimator();
 
 		void update() override;

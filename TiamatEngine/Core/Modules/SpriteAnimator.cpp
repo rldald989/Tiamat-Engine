@@ -1,8 +1,8 @@
 #include "SpriteAnimator.h"
 
-TMT::Game::SpriteAnimator::SpriteAnimator(const Window& window, Scene& scene, std::string object_name, int columns, int rows, int framerate) : 
-	TMT_Module(window, scene, *scene.get_object(object_name)), m_anim_timer(1.f/framerate),
-	m_material(*scene.get_linked_material(object_name)), m_scale(1.f/rows, 1.f/columns),
+TMT::Game::SpriteAnimator::SpriteAnimator(const Window& window, Object& object, Material& linked_material, int columns, int rows, int framerate) :
+	TMT_Module(window, object, "sprite_animator"), m_anim_timer(1.f / framerate),
+	m_material(linked_material), m_scale(1.f/rows, 1.f/columns),
 	m_shader(*m_material.get_shader()), m_framerate(framerate), m_accumulator(0)
 {
 	m_shader.set_vector2("tiling", glm::vec2(m_scale.m_x, m_scale.m_y));

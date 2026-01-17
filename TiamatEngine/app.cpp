@@ -53,6 +53,7 @@ int main() {
     // Our shader, this allows us to change the pixels on the screen how we'd like
     TMT::Shader* sprite_shader = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/tiling_frag.glsl");
     TMT::Shader* background_shader = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/tiling_frag.glsl");
+    TMT::Shader* static_shader = new TMT::Shader("Shaders/vertex_basic.glsl", "Shaders/fragment_basic.glsl");
 
     // Our texture, the load function within the texture struct allows us to load a ppm image (the Image class type) into the texture
     TMT::Texture* test_texture = new TMT::Texture();
@@ -65,8 +66,8 @@ int main() {
     TMT::Texture* dirt_texture = new TMT::Texture();
     dirt_texture->load_stbi("Images/Dirt.png", TMT::texture_filter::TMT_NEAREST);
 
-    TMT::Texture* border_texture = new TMT::Texture();
-    border_texture->load_stbi("Images/Border.png", TMT::texture_filter::TMT_NEAREST);
+    TMT::Texture* house_texture = new TMT::Texture();
+    house_texture->load_stbi("Images/InternHouse.png", TMT::texture_filter::TMT_NEAREST);
 
     Vector3 test_color(1, 1, 1);
 
@@ -80,10 +81,11 @@ int main() {
 
     TMT::Object* dirt = new TMT::Object("Dirt", "model_transform", TMT::tmt_transform(glm::vec2(0), glm::vec2(1, 1), 0));
 
-    TMT::Object* border = new TMT::Object("Border", "model_transform", TMT::tmt_transform(glm::vec2(0), glm::vec2(1, 1), 0));
+    TMT::Object* house = new TMT::Object("House", "model_transform", TMT::tmt_transform(glm::vec2(0), glm::vec2(1, 1), 0));
 
     scene_test.add_shader("Sprite Shader", sprite_shader);
     scene_test.add_shader("BG Shader", background_shader);
+    scene_test.add_shader("Static Shader", static_shader);
 
     scene_test.add_texture("Player", test_texture);
     scene_test.add_material("Player", "Sprite Shader", "Player", test_color);
@@ -94,48 +96,54 @@ int main() {
     scene_test.add_texture("Dirt", dirt_texture);
     scene_test.add_material("Dirt", "BG Shader", "Dirt", Vector3(0.647, 0.165, 0.165));
 
-    scene_test.add_texture("Border", border_texture);
-    scene_test.add_material("Border", "Sprite Shader", "Border", test_color);
+    scene_test.add_texture("House", house_texture);
+    scene_test.add_material("House", "Static Shader", "House", test_color);
 
     scene_test.add_mesh_renderer(TMT::Quad(), "Dirt");
     scene_test.add_mesh_renderer(TMT::Quad(), "Cotton");
+    scene_test.add_mesh_renderer(TMT::Quad(), "House");
     scene_test.add_mesh_renderer(TMT::Quad(), "Player");
-    scene_test.add_mesh_renderer(TMT::Quad(), "Border");
     scene_test.add_object(camera, {}, true);
     scene_test.add_object(dirt, "Dirt");
     scene_test.add_object(cotton, "Cotton");
     scene_test.add_object(player_object, "Player");
-    scene_test.add_object(border, "Border");
+    scene_test.add_object(house, "House");
     
     // Loads the scene 
-    scene_test.load_scene();
+    //scene_test.load_scene();
 
-    TMT::Game::CharacterController character_controller(tmt_window, scene_test, "Player", 1.0f);
-    TMT::Game::SpriteAnimator character_animator(tmt_window, scene_test, "Player", 7, 8, 10);
 
     TMT::Object& t_obj = *scene_test.get_object("Player");
     TMT::Object& t_cam = *scene_test.get_object("Camera");
     TMT::Object& t_cotton = *scene_test.get_object("Cotton");
     TMT::Object& t_dirt = *scene_test.get_object("Dirt");
-    TMT::Object& t_border = *scene_test.get_object("Border");
+    TMT::Object& t_house = *scene_test.get_object("House");
+
     TMT::Shader& bg_shader = *scene_test.get_shader("BG Shader");
     TMT::Shader& p_shader = *scene_test.get_shader("Sprite Shader");
+
     float stage_length = 10;
+    float house_size = 1.f;
+
+    t_house.add_tag("world_end");
+    TMT::Game::Collider character_collider(tmt_window, t_obj, "world_end");
+    TMT::Game::Collider house_collider(tmt_window, t_house, "world_end");
+    character_collider.conform_to_scale();
+    house_collider.conform_to_scale();
+
+    TMT::Game::CharacterController character_controller(character_collider, 1.0f);
+    TMT::Game::SpriteAnimator character_animator(tmt_window, t_obj, *scene_test.get_linked_material("Player"), 7, 8, 10);
+
     t_cotton.parent(&t_dirt);
     t_dirt.local_move(0.0f, -.6f);
     t_cotton.scale(stage_length, 1);
+    t_house.scale(house_size, house_size);
+    t_house.move(-stage_length * .5f - house_size * .5f, 0.5f);
     bg_shader.set_vector2("tiling", glm::vec2(stage_length, 1));
-    t_border.scale(2.f, 2.f);
 
+    t_cotton.set_position(0.f, .5f);
 
-    //for (int columns = 0; columns < 4; columns++) {
-    //    std::cout << "[" << columns << "] : ";
-    //    for (int rows = 0; rows < 4; rows++) {
-    //        float value = t_cotton.get_transform()[rows][columns];
-    //        std::cout << value << " ";
-    //    }
-    //    std::cout << "\n";
-    //}
+    float collision = 0;
 
     //app loop
     while (!glfwWindowShouldClose(tmt_window.get_window())) 
@@ -146,15 +154,18 @@ int main() {
 
         TMT::update_delta_time();
 
+        scene_test.render();
+
         character_controller.update();
+
         character_animator.update();
 
-        t_border.set_position(t_obj.transform.position.x, 0.f);
-        t_border.set_scale(1.f/tmt_window.get_size().m_x, 2.f);
+        character_collider.update();
+        house_collider.update();
 
         t_cam.set_position(-t_obj.transform.position.x, 0.0f);
-        bg_shader.set_vector2("texture_position", glm::vec2(t_cotton.transform.position.x, 0));
-        t_cotton.set_position(t_obj.transform.position.x, .5f);
+        
+        
 
         if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_D) == GLFW_PRESS) {
             character_animator.set_single(false);
@@ -174,7 +185,6 @@ int main() {
         }
     
         // Renders the object
-        scene_test.render();
     
         // Swaps the buffers and does the poll events
         tmt_window.swap_buffers();
