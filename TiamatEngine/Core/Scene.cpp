@@ -319,6 +319,11 @@ void TMT::Scene::add_object(std::string name, std::string matrix_name, const tmt
 	}
 }
 
+std::map<std::string, TMT::Object*> TMT::Scene::get_objects()
+{
+	return m_objects;
+}
+
 void TMT::Scene::add_module(std::string object_name, TMT_Module* module)
 {
 	if (m_objects.find(object_name) != m_objects.end()) {
@@ -385,18 +390,6 @@ TMT::Object* TMT::Scene::get_object(std::string object_name)
 		std::cout << "ERROR: Object \"" << object_name << "\" not found!" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-}
-
-std::vector<TMT::Object*> TMT::Scene::get_tagged_objects(std::string tag_name)
-{
-	std::vector<TMT::Object*> temp;
-	for (auto& o : m_objects) {
-		if (o.second->has_tag(tag_name)) {
-			temp.push_back(o.second);
-		}
-	}
-
-	return temp;
 }
 
 void TMT::Scene::render() 

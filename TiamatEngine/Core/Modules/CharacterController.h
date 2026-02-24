@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Module.h"
+#include "../Scene.h"
 
 namespace TMT::Game
 {
@@ -13,7 +14,7 @@ namespace TMT::Game
 	class Collider : public TMT_Module
 	{
 	public:
-		Collider(const Window& window, Object& object, std::string collider_tag);
+		Collider(const Window& window, Scene& scene, Object& object, std::string collider_tag);
 		~Collider();
 
 		void conform_to_scale();
@@ -22,11 +23,17 @@ namespace TMT::Game
 
 		friend class CharacterController;
 
+		float velocity;
+
 	protected:
 		bool m_collided;
 		glm::vec2 m_bounds;
 		std::string m_collider_tag;
-		std::vector<Collider*> m_others;
+		std::vector<Object*> m_others;
+		Scene& m_scene;
+
+		float m_last_x;
+		float m_current_x;
 	};
 
 	class CharacterController : public TMT_Module

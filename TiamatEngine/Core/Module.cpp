@@ -11,7 +11,3 @@ TMT::TMT_Module::~TMT_Module()
 {
 
 }
-
-void TMT::TMT_Module::update()
-{
-}

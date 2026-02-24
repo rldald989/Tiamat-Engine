@@ -68,6 +68,8 @@ namespace TMT {
 		void add_object(Object* object, std::optional<std::string> linked_material, const bool& no_render);
 		void add_object(std::string name, std::string matrix_name, const tmt_transform& transform, const char* linked_material);
 
+		std::map<std::string, Object*> get_objects();
+
 		void add_module(std::string object_name, TMT_Module* module);
 
 		Shader* get_shader(std::string shader_name);
@@ -75,7 +77,6 @@ namespace TMT {
 		Material* get_material(std::string material_name);
 		Material* get_linked_material(std::string object_name);
 		Object* get_object(std::string object_name);
-		std::vector<Object*> get_tagged_objects(std::string tag_name);
 
 		void render();
 

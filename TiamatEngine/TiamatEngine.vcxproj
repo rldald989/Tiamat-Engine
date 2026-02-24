@@ -156,6 +156,7 @@
     <ClCompile Include="Matrix\Matrix3.cpp" />
     <ClCompile Include="Core\Module.cpp" />
     <ClCompile Include="Core\Modules\CharacterController.cpp" />
+    <ClCompile Include="Core\Time.cpp" />
     <ClCompile Include="Vector\Vector2.cpp" />
     <ClCompile Include="Vector\Vector3.cpp" />
   </ItemGroup>

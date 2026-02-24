@@ -25,8 +25,6 @@
 
 #include "stb_image.h"
 
-// Define delta time otherwise code within classes using delta_time will not work properly or at all
-float TMT::delta_time = 0.0f;
 
 float _clampf(float value, float _min, float _max) {
     return fmin(fmax(value, _min), _max);
@@ -126,8 +124,8 @@ int main() {
     float house_size = 1.f;
 
     t_house.add_tag("world_end");
-    TMT::Game::Collider character_collider(tmt_window, t_obj, "world_end");
-    TMT::Game::Collider house_collider(tmt_window, t_house, "world_end");
+    TMT::Game::Collider character_collider(tmt_window, scene_test, t_obj, "world_end");
+    TMT::Game::Collider house_collider(tmt_window, scene_test, t_house, "world_end");
     character_collider.conform_to_scale();
     house_collider.conform_to_scale();
 
@@ -164,7 +162,6 @@ int main() {
         house_collider.update();
 
         t_cam.set_position(-t_obj.transform.position.x, 0.0f);
-        
         
 
         if (glfwGetKey(tmt_window.get_window(), GLFW_KEY_D) == GLFW_PRESS) {

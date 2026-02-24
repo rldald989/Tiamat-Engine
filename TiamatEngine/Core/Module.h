@@ -10,7 +10,7 @@ namespace TMT
 		TMT_Module(const Window& window, Object& object, std::string module_name);
 		~TMT_Module();
 
-		virtual void update();
+		virtual void update() = 0;
 
 	protected:
 		Object& m_object;

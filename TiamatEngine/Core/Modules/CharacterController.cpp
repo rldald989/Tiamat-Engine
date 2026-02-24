@@ -11,7 +11,7 @@ TMT::Game::CharacterController::~CharacterController()
 }
 
 void TMT::Game::CharacterController::update()
-{
+{ 
 	float character_movement = 0;
 	if (glfwGetKey(m_glfwWindow, GLFW_KEY_A) == GLFW_PRESS) 
 	{
@@ -27,10 +27,18 @@ void TMT::Game::CharacterController::update()
 	m_object.move(character_movement * m_speed * delta_time, 0.0f);
 }
 
-TMT::Game::Collider::Collider(const Window& window, Object& object, std::string collider_tag) :
+TMT::Game::Collider::Collider(const Window& window, Scene& scene, Object& object, std::string collider_tag) :
 	TMT_Module(window, object, "collider"),
-	m_collided(false), m_bounds(glm::vec2(0, 0)), m_collider_tag(collider_tag)
+	m_collided(false), m_bounds(glm::vec2(0, 0)), m_collider_tag(collider_tag),
+	m_scene(scene), m_last_x(0), m_current_x(0), velocity(0)
 {
+	for (auto& o : m_scene.get_objects()) {
+		if (o.second->has_tag(collider_tag) && &*o.second != &m_object) 
+		{
+			std::cout << "Found object with the collider tag" << std::endl;
+			m_others.push_back(o.second);
+		}
+	}
 }
 
 TMT::Game::Collider::~Collider()
@@ -44,9 +52,18 @@ void TMT::Game::Collider::conform_to_scale()
 
 void TMT::Game::Collider::update()
 {
+	m_current_x = m_object.transform.position.x;
+
+	velocity = m_last_x - m_current_x;
+
 	for (auto& o : m_others) {
-		if (m_object.transform.position.x - m_bounds.x <= o->m_object.transform.position.x + o->m_bounds.x) {
-			std::cout << "collision" << std::endl;
+		if (m_object.transform.position.x - m_bounds.x <= o->transform.position.x) {
+			m_collided = true;
+		}
+		else {
+			m_collided = false;
 		}
 	}
+
+	m_last_x = m_object.transform.position.x;
 }

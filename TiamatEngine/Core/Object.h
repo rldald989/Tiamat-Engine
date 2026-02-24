@@ -16,8 +16,6 @@ namespace TMT {
 		tmt_transform(glm::vec2 pos, glm::vec2 scl, float rot) : position(pos), scale(scl), rotation(rot) {}
 	};
 
-
-
 	class Object
 	{
 	public:
